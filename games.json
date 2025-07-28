@@ -1,0 +1,60 @@
+[
+  {
+    "id": "985ad8c379c6c6f2e29e4829fbbad703",
+    "sport": "WNBA",
+    "teamA": "Connecticut Sun",
+    "teamB": "Seattle Storm",
+    "gameTime": "2025-07-28T23:00:00Z",
+    "moneyline": {
+      "true": {
+        "oddsA": 516.85,
+        "oddsB": -516.85
+      },
+      "market": {
+        "oddsA": 522.91,
+        "oddsB": -522.91
+      },
+      "point": null
+    },
+    "spreads": {
+      "true": {
+        "oddsA": -101.8,
+        "oddsB": 101.8
+      },
+      "market": {
+        "oddsA": -102.04,
+        "oddsB": 102.04
+      },
+      "point": 12
+    }
+  },
+  {
+    "id": "9565ee32a5fe118a7588447ce8e12940",
+    "sport": "WNBA",
+    "teamA": "Dallas Wings",
+    "teamB": "New York Liberty",
+    "gameTime": "2025-07-29T00:00:00Z",
+    "moneyline": {
+      "true": {
+        "oddsA": 320.27,
+        "oddsB": -320.27
+      },
+      "market": {
+        "oddsA": 312.11,
+        "oddsB": -312.11
+      },
+      "point": null
+    },
+    "spreads": {
+      "true": {
+        "oddsA": 101.8,
+        "oddsB": -101.8
+      },
+      "market": {
+        "oddsA": -101.95,
+        "oddsB": 101.95
+      },
+      "point": 8
+    }
+  }
+]
