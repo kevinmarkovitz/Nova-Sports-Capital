@@ -38,20 +38,22 @@ export const EVBets = {
       "ev-min-ev-filter",
       "ev-max-ev-filter",
       "ev-market-filter",
+      "ev-min-odds-filter",
+      "ev-max-odds-filter",
+      "ev-search-filter",
     ];
     controls.forEach((id) => {
       const el = document.getElementById(id);
-      if (el) el.addEventListener("change", () => this.renderEVBets());
+      if (el) {
+        const eventType = el.tagName === "SELECT" ? "change" : "input";
+        el.addEventListener(eventType, () => this.renderEVBets());
+      }
     });
-    const searchInput = document.getElementById("ev-search-filter");
-    if (searchInput) {
-      searchInput.addEventListener("input", () => this.renderEVBets());
-    }
+
     const slate = document.getElementById("ev-bets-slate");
     if (slate) {
       slate.addEventListener("click", (e) => {
         const card = e.target.closest(".game-card");
-        // Ensure the modal doesn't open if the track button is clicked
         if (card && card.dataset.id && !e.target.closest(".btn-track-sheet")) {
           this.handleEVCardClick(card);
         }
@@ -359,37 +361,49 @@ export const EVBets = {
         )}</option>`;
       });
   },
+
   calculateEVBets() {
     this.state.evBets = [];
+
+    // Process Props
     App.state.allPropData.forEach((prop) => {
-      if (!prop.trueOdds || !prop.bookmakerOdds) return;
-      const trueProbOver = App.helpers.americanToProb(prop.trueOdds.over);
-      const trueProbUnder = App.helpers.americanToProb(prop.trueOdds.under);
+      // Use the new evTabTrueOdds if it exists, otherwise fall back to the original trueOdds
+      const consensus = prop.evTabTrueOdds || prop.trueOdds;
+      if (!consensus || !prop.bookmakerOdds) return;
+
+      // Handle both two-way (Over/Under) and one-way (Yes/No) props
+      const trueProbOver = consensus.over
+        ? App.helpers.americanToProb(consensus.over)
+        : prop.trueProb || null;
+      const trueProbUnder = consensus.under
+        ? App.helpers.americanToProb(consensus.under)
+        : null;
+
       prop.bookmakerOdds.forEach((book) => {
-        if (book.vigOdds && book.vigOdds.over != null) {
+        const odds = book.vigOdds || book.odds;
+        if (odds && odds.over != null && trueProbOver) {
           const evOver =
-            trueProbOver * App.helpers.americanToDecimal(book.vigOdds.over) - 1;
+            trueProbOver * App.helpers.americanToDecimal(odds.over) - 1;
           this.state.evBets.push({
             type: "prop",
             data: prop,
             book,
             side: "Over",
-            odds: book.vigOdds.over,
+            odds: odds.over,
             ev: evOver,
             trueProb: trueProbOver,
             marketKey: prop.market,
           });
         }
-        if (book.vigOdds && book.vigOdds.under != null) {
+        if (odds && odds.under != null && trueProbUnder) {
           const evUnder =
-            trueProbUnder * App.helpers.americanToDecimal(book.vigOdds.under) -
-            1;
+            trueProbUnder * App.helpers.americanToDecimal(odds.under) - 1;
           this.state.evBets.push({
             type: "prop",
             data: prop,
             book,
             side: "Under",
-            odds: book.vigOdds.under,
+            odds: odds.under,
             ev: evUnder,
             trueProb: trueProbUnder,
             marketKey: prop.market,
@@ -397,6 +411,8 @@ export const EVBets = {
         }
       });
     });
+
+    // Process Game Lines
     App.state.allGameData.forEach((game) => {
       ["moneyline", "spreads", "totals"].forEach((marketKey) => {
         if (!game[marketKey]) return;
@@ -404,9 +420,13 @@ export const EVBets = {
           ? game[marketKey]
           : [game[marketKey]];
         lines.forEach((line) => {
-          if (!line.trueOdds || !line.bookmakerOdds) return;
-          const trueProbA = App.helpers.americanToProb(line.trueOdds.oddsA);
-          const trueProbB = App.helpers.americanToProb(line.trueOdds.oddsB);
+          // Use the new evTabTrueOdds if it exists, otherwise fall back to the original trueOdds
+          const consensus = line.evTabTrueOdds || line.trueOdds;
+          if (!consensus || !line.bookmakerOdds) return;
+
+          const trueProbA = App.helpers.americanToProb(consensus.oddsA);
+          const trueProbB = App.helpers.americanToProb(consensus.oddsB);
+
           line.bookmakerOdds.forEach((book) => {
             if (book.vigOdds && book.vigOdds.oddsA != null) {
               const evA =
@@ -445,14 +465,21 @@ export const EVBets = {
       });
     });
   },
+
   renderEVBets() {
     const slate = document.getElementById("ev-bets-slate");
     slate.innerHTML = "";
+
     const bankroll =
       parseFloat(document.getElementById("ev-bankroll").value) || 0;
     const kellyMultiplier =
       parseFloat(document.getElementById("ev-kelly-multiplier").value) || 0.5;
     const selectedBook = document.getElementById("ev-book-filter").value;
+    const selectedMarket = document.getElementById("ev-market-filter").value;
+    const searchTerm = document
+      .getElementById("ev-search-filter")
+      .value.toLowerCase();
+
     const minEv =
       (parseFloat(document.getElementById("ev-min-ev-filter").value) || 0) /
       100;
@@ -460,16 +487,27 @@ export const EVBets = {
     const maxEv = maxEvInput.value
       ? parseFloat(maxEvInput.value) / 100
       : Infinity;
-    const selectedMarket = document.getElementById("ev-market-filter").value;
-    const searchTerm = document
-      .getElementById("ev-search-filter")
-      .value.toLowerCase();
+
+    // --- NEW: Get Min/Max odds values ---
+    const minOddsInput = document.getElementById("ev-min-odds-filter");
+    const maxOddsInput = document.getElementById("ev-max-odds-filter");
+    const minOdds = minOddsInput.value
+      ? parseFloat(minOddsInput.value)
+      : -Infinity;
+    const maxOdds = maxOddsInput.value
+      ? parseFloat(maxOddsInput.value)
+      : Infinity;
+
     const filteredBets = this.state.evBets.filter((bet) => {
       const evCondition = bet.ev >= minEv && bet.ev <= maxEv;
       const bookCondition =
         selectedBook === "all" || bet.book.bookmaker === selectedBook;
       const marketCondition =
         selectedMarket === "all" || bet.marketKey === selectedMarket;
+
+      // --- NEW: Add odds condition to the filter ---
+      const oddsCondition = bet.odds >= minOdds && bet.odds <= maxOdds;
+
       let searchCondition = true;
       if (searchTerm) {
         const teamA = bet.data.teamA.toLowerCase();
@@ -480,20 +518,28 @@ export const EVBets = {
           teamB.includes(searchTerm) ||
           player.includes(searchTerm);
       }
-      return evCondition && bookCondition && marketCondition && searchCondition;
+
+      // --- NEW: Combine all conditions ---
+      return (
+        evCondition &&
+        bookCondition &&
+        marketCondition &&
+        oddsCondition &&
+        searchCondition
+      );
     });
+
     if (filteredBets.length === 0) {
       slate.innerHTML = `<p class="text-center text-main-secondary">No +EV bets found matching your criteria.</p>`;
       return;
     }
+
     filteredBets.sort((a, b) => b.ev - a.ev);
     filteredBets.forEach((bet) => {
       const card = this.createEVBetCard(bet, bankroll, kellyMultiplier);
       slate.appendChild(card);
     });
   },
-
-  // js/ev_bets.js
   createEVBetCard(bet, bankroll, kellyMultiplier) {
     const card = document.createElement("div");
     card.className = "game-card p-4 rounded-lg";
