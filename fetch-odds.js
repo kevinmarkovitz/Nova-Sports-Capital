@@ -2,17 +2,17 @@ const axios = require("axios");
 const fs = require("fs");
 
 // --- Configuration ---
-const ODDS_API_KEY = "7421b6a7d7b2c413ccb592182d5e2ca5";
+const ODDS_API_KEY = "ed63bd22ecf8ad019b69608e25b5c9c3";
 const REGIONS = "us,us2,eu,au,us_ex";
 const ODDS_FORMAT = "american";
 const REQUEST_DELAY = 1000;
 const FETCH_DAYS_AHEAD = 5;
-const ALT_LINE_RANGE_LIMIT = 5.0; // For spreads and totals, limit alt lines to this range from main line
+const ALT_LINE_RANGE_LIMIT = 1.0; // For spreads and totals, limit alt lines to this range from main line
 const MIN_ODDS_LIMIT = -5000;
 const MAX_ODDS_LIMIT = 5000;
 // Set a value to null to disable that filter.
-const PREFILTER_MIN_ODDS = -200; // Example: Ignores games with odds below.
-const PREFILTER_MAX_ODDS = 300; // Example: Ignores games with odds above.
+const PREFILTER_MIN_ODDS = null; // Example: Ignores games with odds below.
+const PREFILTER_MAX_ODDS = null; // Example: Ignores games with odds above.
 
 const ONE_WAY_PROP_MARKETS = [
   "player_anytime_td",
@@ -163,21 +163,21 @@ const SPORT_CONFIG = {
   americanfootball_nfl: {
     markets: [
       "gameLines",
-      "alternateLines",
-      "footballPassingProps",
-      "footballRushingProps",
-      "footballReceivingProps",
-      "footballComboProps",
-      "footballTdScorerProps",
-      "footballKickingProps",
-      "footballDefensiveProps",
-      "footballOneWayProps",
-      "footballAlternatePassingProps",
-      "footballAlternateRushingProps",
-      "footballAlternateReceivingProps",
-      "footballAlternateComboProps",
-      "footballAlternateKickingProps",
-      "footballAlternateDefensiveProps",
+      // "alternateLines",
+      // "footballPassingProps",
+      // "footballRushingProps",
+      // "footballReceivingProps",
+      // "footballComboProps",
+      // "footballTdScorerProps",
+      // "footballKickingProps",
+      // "footballDefensiveProps",
+      // "footballOneWayProps",
+      // "footballAlternatePassingProps",
+      // "footballAlternateRushingProps",
+      // "footballAlternateReceivingProps",
+      // "footballAlternateComboProps",
+      // "footballAlternateKickingProps",
+      // "footballAlternateDefensiveProps",
     ],
   },
   // americanfootball_ncaaf: {
@@ -566,7 +566,41 @@ function calculateConsensusLine(oddsArray, removeVig = false) {
     oddsB: probToAmerican(consensusProbB),
   };
 }
+function calculateConsensus(overPool, underPool, removeVig) {
+  if (overPool.length === 0 || underPool.length === 0) return null;
 
+  let weightedOverProb = 0,
+    totalOverWeight = 0;
+  overPool.forEach((item) => {
+    weightedOverProb += americanToImplied(item.odds) * item.weight;
+    totalOverWeight += item.weight;
+  });
+  const avgOverProb =
+    totalOverWeight > 0 ? weightedOverProb / totalOverWeight : 0;
+
+  let weightedUnderProb = 0,
+    totalUnderWeight = 0;
+  underPool.forEach((item) => {
+    weightedUnderProb += americanToImplied(item.odds) * item.weight;
+    totalUnderWeight += item.weight;
+  });
+  const avgUnderProb =
+    totalUnderWeight > 0 ? weightedUnderProb / totalUnderWeight : 0;
+
+  let finalOverProb = avgOverProb;
+  if (removeVig) {
+    const totalProb = avgOverProb + avgUnderProb;
+    if (totalProb > 1) {
+      // Only remove vig if total probability is over 100%
+      finalOverProb = avgOverProb / totalProb;
+    }
+  }
+
+  return {
+    over: probToAmerican(finalOverProb),
+    under: probToAmerican(1 - finalOverProb),
+  };
+}
 function processAllData(allGames) {
   const processedGameLines = [];
   const propsMap = new Map();

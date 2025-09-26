@@ -5,6 +5,7 @@ import { System } from "./system.js";
 import { UI } from "./ui.js";
 import { OddsScreen } from "./odds_screen.js";
 import { TEAM_LOGO_MAP } from "./mappings.js";
+import { OddsModal } from "./odds_modal.js";
 
 export const App = {
   config: {

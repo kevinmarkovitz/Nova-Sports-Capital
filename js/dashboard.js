@@ -5,6 +5,7 @@ import { Tracker } from "./tracker.js";
 import { System } from "./system.js";
 import { OddsScreen } from "./odds_screen.js";
 import { UI } from "./ui.js";
+import { OddsModal } from "./odds_modal.js";
 
 export const Dashboard = {
   state: {
@@ -80,11 +81,37 @@ export const Dashboard = {
     const item = JSON.parse(card.dataset.item);
     const marketType = item.currentMarket;
     const isProp = !["moneyline", "spreads", "totals"].includes(marketType);
-    const id = isProp ? item.propId : item.id;
-    if (id && marketType) {
-      OddsScreen.showById(id, marketType, isProp);
-      const oddsScreenTab = document.getElementById("tab-odds-screen");
-      UI.activateTab(oddsScreenTab);
+
+    let lineData;
+    if (isProp) {
+      lineData = item;
+    } else {
+      const lines = item[marketType];
+      if (!lines) return;
+
+      // Find the currently selected line from the pill selector, or the default
+      const activePill = card.querySelector(".spread-pill.active");
+      if (activePill) {
+        lineData = lines[parseInt(activePill.dataset.lineIndex)];
+      } else {
+        // Find default line (usually the one closest to 0)
+        const defaultIndex =
+          (marketType === "spreads" || marketType === "totals") &&
+          lines.length > 0
+            ? lines.reduce(
+                (closest, line, i) =>
+                  Math.abs(line.point) < Math.abs(lines[closest].point)
+                    ? i
+                    : closest,
+                0
+              )
+            : 0;
+        lineData = lines[defaultIndex];
+      }
+    }
+
+    if (item && lineData) {
+      OddsModal.show(item, lineData, marketType, isProp);
     }
   },
 
