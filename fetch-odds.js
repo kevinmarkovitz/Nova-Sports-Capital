@@ -169,42 +169,42 @@ const MARKET_DEFINITIONS = {
 
 // To enable a sport, uncomment its block.
 const SPORT_CONFIG = {
-  // americanfootball_nfl: {
-  //   markets: [
-  //     // "gameLines",
-  //     // "alternateLines",
-  //     // "footballPassingProps",
-  //     // "footballRushingProps",
-  //     // "footballReceivingProps",
-  //     // "footballComboProps",
-  //     // "footballTdScorerProps",
-  //     // "footballKickingProps",
-  //     // "footballDefensiveProps",
-  //     // "footballOneWayProps",
-  //     // "footballAlternatePassingProps",
-  //     // "footballAlternateRushingProps",
-  //     // "footballAlternateReceivingProps",
-  //     // "footballAlternateComboProps",
-  //     // "footballAlternateKickingProps",
-  //     // "footballAlternateDefensiveProps",
-  //   ],
-  // },
+  americanfootball_nfl: {
+    markets: [
+      "gameLines",
+      // "alternateLines",
+      // "footballPassingProps",
+      // "footballRushingProps",
+      "footballReceivingProps",
+      // "footballComboProps",
+      // "footballTdScorerProps",
+      // "footballKickingProps",
+      // "footballDefensiveProps",
+      // "footballOneWayProps",
+      // "footballAlternatePassingProps",
+      // "footballAlternateRushingProps",
+      // "footballAlternateReceivingProps",
+      // "footballAlternateComboProps",
+      // "footballAlternateKickingProps",
+      // "footballAlternateDefensiveProps",
+    ],
+  },
   // americanfootball_ncaaf: {
   //   markets: ["gameLines", "alternateLines"],
   // },
   // basketball_nba: {
   //   markets: ["gameLines", "alternateLines", "nbaPlayerProps"],
   // },
-  baseball_mlb: {
-    markets: [
-      // "gameLines",
-      "mlbBattingProps",
-      // "mlbPitchingProps",
-      // "mlbOneWayProps",
-      // "mlbAlternateBattingProps",
-      // "mlbAlternatePitchingProps",
-    ],
-  },
+  // baseball_mlb: {
+  //   markets: [
+  //     // "gameLines",
+  //     "mlbBattingProps",
+  //     // "mlbPitchingProps",
+  //     // "mlbOneWayProps",
+  //     // "mlbAlternateBattingProps",
+  //     // "mlbAlternatePitchingProps",
+  //   ],
+  // },
   // basketball_wnba: {
   //   markets: [
   //     "gameLines",
@@ -222,10 +222,12 @@ const GAME_LINE_BOOK_WEIGHTS = {
       americanfootball_ncaaf: 2.8,
     },
   },
+  betfair_ex_eu: { type: "sharp", weights: { default: 2.0 } },
+
   novig: {
     type: "sharp",
     weights: {
-      default: 1.25,
+      default: 2.0,
       basketball_wnba: 1.85,
       americanfootball_nfl: 2.75,
       americanfootball_ncaaf: 2.5,
@@ -491,35 +493,36 @@ const PROP_BOOK_WEIGHTS = {
 };
 
 const EV_TAB_WEIGHTS = {
-  // --- Tier 1: The Benchmark Sharp Book (Total: 14.4578%) ---
-  pinnacle: { type: "sharp", weights: { default: 3.0 } }, // 14.4578%
+  // --- Tier 1: The Benchmark Sharp Book (Total: 13.19%) ---
+  pinnacle: { type: "sharp", weights: { default: 3.0 } }, // 13.1868%
 
-  // --- Tier 2: Premier Sharp Books (Total: 24.0964%) ---
-  betonlineag: { type: "sharp", weights: { default: 2.5 } }, // 12.0482%
-  fanduel: { type: "market", weights: { default: 2.5 } }, // 12.0482%
+  // --- Tier 2: Premier Sharp Books (Total: 20.88%) ---
+  betonlineag: { type: "sharp", weights: { default: 2.5 } }, // 10.9890%
+  fanduel: { type: "market", weights: { default: 2.25 } }, // 9.8901%
 
-  // --- Tier 3: Sharp Exchanges (Total: 28.9157%) ---
-  novig: { type: "sharp", weights: { default: 2.0 } }, // 9.6386%
-  prophetx: { type: "sharp", weights: { default: 2.0 } }, // 9.6386%
-  lowvig: { type: "sharp", weights: { default: 2.0 } }, // 9.6386%
+  // --- Tier 3: Sharp Exchanges (Total: 35.16%) ---
+  novig: { type: "sharp", weights: { default: 2.0 } }, // 8.7912%
+  prophetx: { type: "sharp", weights: { default: 2.0 } }, // 8.7912%
+  lowvig: { type: "sharp", weights: { default: 2.0 } }, // 8.7912%
+  betfair_ex_eu: { type: "sharp", weights: { default: 2.0 } }, // 8.7912%
 
-  // --- Tier 4: Top-Tier Market Makers (Total: 8.4337%) ---
-  draftkings: { type: "market", weights: { default: 1.75 } }, // 8.4337%
+  // --- Tier 4: Top-Tier Market Makers (Total: 7.69%) ---
+  draftkings: { type: "market", weights: { default: 1.75 } }, // 7.6923%
 
-  // --- Tier 5: Major Market Books (Total: 4.8193%) ---
-  williamhill_us: { type: "market", weights: { default: 1.0 } }, // 4.8193%
+  // --- Tier 5: Major Market Books (Total: 4.39%) ---
+  williamhill_us: { type: "market", weights: { default: 1.0 } }, // 4.3956%
 
-  // --- Tier 6: Standard Market Books (Total: 14.4578%) ---
-  espnbet: { type: "market", weights: { default: 0.75 } }, // 3.6145%
-  fanatics: { type: "market", weights: { default: 0.75 } }, // 3.6145%
-  hardrockbet: { type: "market", weights: { default: 0.75 } }, // 3.6145%
-  bet365_au: { type: "market", weights: { default: 0.75 } }, // 3.6145%
+  // --- Tier 6: Standard Market Books (Total: 13.19%) ---
+  espnbet: { type: "market", weights: { default: 0.75 } }, // 3.2967%
+  fanatics: { type: "market", weights: { default: 0.75 } }, // 3.2967%
+  hardrockbet: { type: "market", weights: { default: 0.75 } }, // 3.2967%
+  bet365_au: { type: "market", weights: { default: 0.75 } }, // 3.2967%
 
-  // --- Tier 7: Softer / Smaller Books (Total: 4.8193%) ---
-  betmgm: { type: "market", weights: { default: 0.25 } }, // 1.2048%
-  betrivers: { type: "market", weights: { default: 0.25 } }, // 1.2048%
-  ballybet: { type: "market", weights: { default: 0.25 } }, // 1.2048%
-  fliff: { type: "market", weights: { default: 0.25 } }, // 1.2048%
+  // --- Tier 7: Softer / Smaller Books (Total: 4.39%) ---
+  betmgm: { type: "market", weights: { default: 0.25 } }, // 1.0989%
+  betrivers: { type: "market", weights: { default: 0.25 } }, // 1.0989%
+  ballybet: { type: "market", weights: { default: 0.25 } }, // 1.0989%
+  fliff: { type: "market", weights: { default: 0.25 } }, // 1.0989%
 };
 
 const BOOKMAKERS_TO_FETCH = Object.keys(GAME_LINE_BOOK_WEIGHTS).join(",");
