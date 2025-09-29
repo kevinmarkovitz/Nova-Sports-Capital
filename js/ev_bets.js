@@ -302,6 +302,7 @@ export const EVBets = {
       slate.appendChild(card);
     });
   },
+
   createEVBetCard(bet, bankroll, kellyMultiplier) {
     const card = document.createElement("div");
     card.className = "game-card p-4 rounded-lg";
@@ -340,7 +341,13 @@ export const EVBets = {
         .replace(/_/g, " ")
         .replace(/\b\w/g, (l) => l.toUpperCase());
       topHtml = `<p class="font-bold text-lg text-main-primary">${prop.player}</p><p class="text-sm text-main-secondary">${prop.teamB} @ ${prop.teamA}</p>`;
-      bottomHtml = `<p class="font-bold text-lg text-accent-blue">${bet.side} ${prop.point} ${propMarketName}</p>`;
+
+      // CORRECTED: Handle display for both Over/Under and one-way props
+      const betDescription =
+        prop.point !== null
+          ? `${bet.side} ${prop.point} ${propMarketName}`
+          : propMarketName;
+      bottomHtml = `<p class="font-bold text-lg text-accent-blue">${betDescription}</p>`;
     } else {
       const game = bet.data;
       let sideName;
@@ -403,57 +410,63 @@ export const EVBets = {
                       </div>`;
 
     const trackBtn = card.querySelector(".btn-track-sheet");
-    trackBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const btn = e.target;
-      const selectedMember = document.getElementById("member-selector").value;
-
-      // Format data for Airtable API
-      const airtableData = {
-        fields: {
-          Timestamp: new Date().toISOString(),
-          Sport: btn.dataset.sport,
-          Game: btn.dataset.game,
-          Bet: btn.dataset.bet,
-          Odds: parseFloat(btn.dataset.odds),
-          Bookmaker: btn.dataset.bookmaker,
-          EV_Percent: parseFloat(btn.dataset.ev),
-          Stake: parseFloat(btn.dataset.stake),
-          Status: "Pending",
-          Member: selectedMember,
-        },
-      };
-
-      btn.textContent = "Saving...";
-      btn.disabled = true;
-
-      const { airtableApiKey, airtableBaseId, airtableTableName } = App.config;
-      const url = `https://api.airtable.com/v0/${airtableBaseId}/${airtableTableName}`;
-
-      fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${airtableApiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ records: [airtableData] }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Airtable response was not ok");
+    if (trackBtn) {
+      trackBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const btn = e.target;
+        const selectedMember = document.getElementById("member-selector").value;
+        const betData = {
+          sport: btn.dataset.sport,
+          game: btn.dataset.game,
+          bet: btn.dataset.bet,
+          odds: parseFloat(btn.dataset.odds),
+          bookmaker: btn.dataset.bookmaker,
+          ev: parseFloat(btn.dataset.ev),
+          stake: parseFloat(btn.dataset.stake),
+          member: selectedMember,
+        };
+        btn.textContent = "Saving...";
+        btn.disabled = true;
+        fetch(
+          App.config.airtableApiKey
+            ? `https://api.airtable.com/v0/${App.config.airtableBaseId}/${App.config.airtableTableName}`
+            : App.config.betTrackerApiUrl,
+          {
+            method: "POST",
+            headers: App.config.airtableApiKey
+              ? {
+                  Authorization: `Bearer ${App.config.airtableApiKey}`,
+                  "Content-Type": "application/json",
+                }
+              : { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(
+              App.config.airtableApiKey
+                ? { records: [{ fields: betData }] }
+                : betData
+            ),
           }
-          return response.json();
-        })
-        .then(() => {
-          btn.textContent = "Saved!";
-          btn.classList.replace("bg-accent-blue", "bg-green-600");
-        })
-        .catch((error) => {
-          console.error("Error tracking bet to Airtable:", error);
-          btn.textContent = "Error!";
-          btn.classList.replace("bg-accent-blue", "bg-red-600");
-        });
-    });
+        )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (data.records || (data.status && data.status === "success")) {
+              btn.textContent = "Saved!";
+              btn.classList.replace("bg-accent-blue", "bg-green-600");
+            } else {
+              throw new Error("Script or API returned an error.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error tracking bet:", error);
+            btn.textContent = "Error!";
+            btn.classList.replace("bg-accent-blue", "bg-red-600");
+          });
+      });
+    }
 
     card.querySelectorAll(".ev-card-clickable-area").forEach((area) => {
       area.addEventListener("click", () => this.handleEVCardClick(card));

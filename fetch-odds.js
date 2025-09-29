@@ -6,8 +6,8 @@ const ODDS_API_KEY = "ed63bd22ecf8ad019b69608e25b5c9c3";
 const REGIONS = "us,us2,eu,au,us_ex";
 const ODDS_FORMAT = "american";
 const REQUEST_DELAY = 1000;
-const FETCH_DAYS_AHEAD = 5;
-const ALT_LINE_RANGE_LIMIT = 1.0; // For spreads and totals, limit alt lines to this range from main line
+const FETCH_DAYS_AHEAD = 2;
+const ALT_LINE_RANGE_LIMIT = 4.0; // For spreads and totals, limit alt lines to this range from main line
 const MIN_ODDS_LIMIT = -5000;
 const MAX_ODDS_LIMIT = 5000;
 // Set a value to null to disable that filter.
@@ -23,8 +23,8 @@ const ONE_WAY_PROP_MARKETS = [
   "pitcher_record_a_win",
 ];
 const MARKET_DEFINITIONS = {
-  gameLines: ["h2h", "spreads", "totals"],
-  alternateLines: ["alternate_spreads", "alternate_totals"],
+  gameLines: ["h2h,spreads"],
+  alternateLines: ["alternate_spreads"],
 
   // --- American Football Props ---
   footballPassingProps: [
@@ -68,7 +68,10 @@ const MARKET_DEFINITIONS = {
     "player_sacks",
     "player_defensive_interceptions",
   ],
-  footballOneWayProps: ["player_anytime_td", "player_1st_td", "player_last_td"],
+  footballOneWayProps: [
+    "player_anytime_td",
+    // "player_1st_td", "player_last_td"
+  ],
 
   // --- Alternate American Football Props ---
   footballAlternatePassingProps: [
@@ -115,7 +118,13 @@ const MARKET_DEFINITIONS = {
     "player_blocks",
     "player_turnovers",
   ],
-
+  // --- WNBA Player Props ---
+  wnbaPlayerProps: [
+    "player_points",
+    "player_rebounds",
+    "player_assists",
+    "player_threes",
+  ],
   // --- MLB Player Props ---
   mlbBattingProps: [
     "batter_home_runs",
@@ -126,10 +135,10 @@ const MARKET_DEFINITIONS = {
     "batter_hits_runs_rbis",
     "batter_singles",
     "batter_doubles",
-    "batter_triples",
-    "batter_walks",
-    "batter_strikeouts",
-    "batter_stolen_bases",
+    // "batter_triples",
+    // "batter_walks",
+    // "batter_strikeouts",
+    // "batter_stolen_bases",
   ],
   mlbPitchingProps: [
     "pitcher_strikeouts",
@@ -160,40 +169,46 @@ const MARKET_DEFINITIONS = {
 
 // To enable a sport, uncomment its block.
 const SPORT_CONFIG = {
-  americanfootball_nfl: {
-    markets: [
-      "gameLines",
-      // "alternateLines",
-      // "footballPassingProps",
-      // "footballRushingProps",
-      // "footballReceivingProps",
-      // "footballComboProps",
-      // "footballTdScorerProps",
-      // "footballKickingProps",
-      // "footballDefensiveProps",
-      // "footballOneWayProps",
-      // "footballAlternatePassingProps",
-      // "footballAlternateRushingProps",
-      // "footballAlternateReceivingProps",
-      // "footballAlternateComboProps",
-      // "footballAlternateKickingProps",
-      // "footballAlternateDefensiveProps",
-    ],
-  },
+  // americanfootball_nfl: {
+  //   markets: [
+  //     // "gameLines",
+  //     // "alternateLines",
+  //     // "footballPassingProps",
+  //     // "footballRushingProps",
+  //     // "footballReceivingProps",
+  //     // "footballComboProps",
+  //     // "footballTdScorerProps",
+  //     // "footballKickingProps",
+  //     // "footballDefensiveProps",
+  //     // "footballOneWayProps",
+  //     // "footballAlternatePassingProps",
+  //     // "footballAlternateRushingProps",
+  //     // "footballAlternateReceivingProps",
+  //     // "footballAlternateComboProps",
+  //     // "footballAlternateKickingProps",
+  //     // "footballAlternateDefensiveProps",
+  //   ],
+  // },
   // americanfootball_ncaaf: {
   //   markets: ["gameLines", "alternateLines"],
   // },
   // basketball_nba: {
   //   markets: ["gameLines", "alternateLines", "nbaPlayerProps"],
   // },
-  // baseball_mlb: {
+  baseball_mlb: {
+    markets: [
+      // "gameLines",
+      "mlbBattingProps",
+      // "mlbPitchingProps",
+      // "mlbOneWayProps",
+      // "mlbAlternateBattingProps",
+      // "mlbAlternatePitchingProps",
+    ],
+  },
+  // basketball_wnba: {
   //   markets: [
   //     "gameLines",
-  //     "mlbBattingProps",
-  //     "mlbPitchingProps",
-  //     "mlbOneWayProps",
-  //     "mlbAlternateBattingProps",
-  //     "mlbAlternatePitchingProps",
+  //     // "wnbaPlayerProps"
   //   ],
   // },
 };
@@ -331,7 +346,7 @@ const GAME_LINE_BOOK_WEIGHTS = {
     weights: {
       default: 1.0,
       baseball_mlb: 4.25,
-      basketball_wnba: 3.0,
+      basketball_wnba: 3.3,
       americanfootball_nfl: 2.3,
       americanfootball_ncaaf: 2.5,
     },
@@ -507,6 +522,8 @@ const EV_TAB_WEIGHTS = {
   fliff: { type: "market", weights: { default: 0.25 } }, // 1.2048%
 };
 
+const BOOKMAKERS_TO_FETCH = Object.keys(GAME_LINE_BOOK_WEIGHTS).join(",");
+
 const americanToImplied = (odds) => {
   if (odds === null || typeof odds === "undefined") return 0;
   if (odds >= 100) return 100 / (odds + 100);
@@ -601,10 +618,11 @@ function calculateConsensus(overPool, underPool, removeVig) {
     under: probToAmerican(1 - finalOverProb),
   };
 }
+
 function processAllData(allGames) {
   const processedGameLines = [];
   const propsMap = new Map();
-  const oneWayMarketsMap = new Map(); // For markets like TD scorers
+  const oneWayMarketsMap = new Map();
 
   for (const game of allGames) {
     const gameData = {
@@ -619,7 +637,6 @@ function processAllData(allGames) {
       b.markets.map((m) => ({ ...m, bookmaker: b.key }))
     );
 
-    // --- Game Line Processing (No Change) ---
     const moneylineOdds = allMarkets.filter((m) => m.key === "h2h");
     if (moneylineOdds.length > 0) {
       const consensus = processMoneylineMarket(
@@ -662,21 +679,48 @@ function processAllData(allGames) {
         hasGameLines = true;
       }
     }
+
     if (hasGameLines) {
-      // Filtering alternate lines logic... (No Change)
+      // --- CORRECTED: Alternate line filtering logic ---
+      const marketsToFilter = ["spreads", "totals"];
+      for (const market of marketsToFilter) {
+        if (gameData[market] && gameData[market].length > 1) {
+          // First, find the line with the point value closest to zero. This is the true main line.
+          const mainLine = gameData[market].reduce((prev, curr) =>
+            Math.abs(curr.point) < Math.abs(prev.point) ? curr : prev
+          );
+
+          const mainLinePoint = mainLine.point;
+
+          // Now, filter all other lines based on the range from that true main line.
+          const lowerBound = mainLinePoint - ALT_LINE_RANGE_LIMIT;
+          const upperBound = mainLinePoint + ALT_LINE_RANGE_LIMIT;
+
+          const originalLineCount = gameData[market].length;
+          gameData[market] = gameData[market].filter(
+            (line) => line.point >= lowerBound && line.point <= upperBound
+          );
+
+          if (gameData[market].length < originalLineCount) {
+            console.log(
+              `- Filtered ${
+                originalLineCount - gameData[market].length
+              } alternate ${market} lines for ${game.home_team}.`
+            );
+          }
+        }
+      }
       processedGameLines.push(gameData);
     }
 
-    // --- Prop Market Processing (UPDATED) ---
+    // --- Prop Market Processing ---
     const propMarkets = allMarkets.filter(
       (m) =>
         m.key.startsWith("player_") ||
         m.key.startsWith("batter_") ||
         m.key.startsWith("pitcher_")
     );
-
     for (const market of propMarkets) {
-      // Check if this is a one-way market
       if (ONE_WAY_PROP_MARKETS.includes(market.key)) {
         const marketId = `${game.id}-${market.key}`;
         if (!oneWayMarketsMap.has(marketId)) {
@@ -697,7 +741,6 @@ function processAllData(allGames) {
           }))
         );
       } else {
-        // It's a two-way market (Over/Under)
         for (const outcome of market.outcomes) {
           const propKey = `${game.id}-${market.key}-${outcome.description}-${outcome.point}`;
           if (!propsMap.has(propKey)) {
@@ -722,7 +765,6 @@ function processAllData(allGames) {
     }
   }
 
-  // Process all the collected props
   let processedPlayerProps = [];
   for (const propData of propsMap.values()) {
     const processedProp = processPropMarket(propData, PROP_BOOK_WEIGHTS);
@@ -732,7 +774,6 @@ function processAllData(allGames) {
     }
   }
 
-  // NEW: Process all the one-way markets
   for (const oneWayMarketData of oneWayMarketsMap.values()) {
     const processedOneWayProps = processOneWayMarket(
       oneWayMarketData,
@@ -1036,7 +1077,8 @@ function processOneWayMarket(marketData, bookWeights) {
   const outcomesByPlayer = new Map();
 
   for (const outcome of marketData.outcomes) {
-    const playerName = outcome.name;
+    // CORRECTED: Use outcome.description for the player's name
+    const playerName = outcome.description;
     if (!outcomesByPlayer.has(playerName)) {
       outcomesByPlayer.set(playerName, []);
     }
@@ -1063,7 +1105,6 @@ function processOneWayMarket(marketData, bookWeights) {
     }
   }
 
-  // UPDATED LOGIC: Calculate a weighted average of true probabilities
   const playerTrueProbs = new Map();
   for (const [player, oddsList] of outcomesByPlayer.entries()) {
     let weightedProbSum = 0;
@@ -1071,7 +1112,6 @@ function processOneWayMarket(marketData, bookWeights) {
     for (const odd of oddsList) {
       const evTabBookConfig = EV_TAB_WEIGHTS[odd.bookmaker];
       const totalMarketProb = sharpBookTotals.get(odd.bookmaker);
-
       if (
         evTabBookConfig &&
         evTabBookConfig.type === "sharp" &&
@@ -1097,10 +1137,11 @@ function processOneWayMarket(marketData, bookWeights) {
     if (trueProb) {
       const allBookmakerOdds = oddsList.map((o) => {
         const bookConfig = bookWeights[o.bookmaker];
+        // Use 'over' to represent the 'Yes' price to match the frontend logic
         return {
           bookmaker: o.bookmaker,
           type: bookConfig?.type,
-          vigOdds: { over: o.price, under: null }, // Use 'over' for the 'yes' price
+          vigOdds: { over: o.price, under: null },
           trueOdds: null,
         };
       });
@@ -1125,6 +1166,7 @@ function processOneWayMarket(marketData, bookWeights) {
   }
   return finalProps.length > 0 ? finalProps : null;
 }
+
 async function getLiveOdds() {
   if (!ODDS_API_KEY) {
     console.error("ERROR: Please add your key from The Odds API.");
@@ -1133,7 +1175,6 @@ async function getLiveOdds() {
   let args = process.argv.slice(2);
   let cliMarkets = null;
   let daysAhead = FETCH_DAYS_AHEAD;
-
   const marketsIndex = args.indexOf("--markets");
   if (marketsIndex !== -1) {
     if (args.length > marketsIndex + 1) {
@@ -1145,14 +1186,13 @@ async function getLiveOdds() {
   if (daysIndex !== -1) {
     if (args.length > daysIndex + 1) {
       const parsedDays = parseInt(args[daysIndex + 1], 10);
-      if (!isNaN(parsedDays) && parsedDays > 0) {
+      if (!isNaN(parsedDays) && parsedDays >= 0) {
         daysAhead = parsedDays;
         args.splice(daysIndex, 2);
       }
     }
   }
 
-  // --- Phase 1: Fetching Events ---
   console.log("\n--- Phase 1: Fetching all upcoming game IDs ---");
   let upcomingEvents = [];
   try {
@@ -1173,11 +1213,10 @@ async function getLiveOdds() {
     return;
   }
 
-  // --- Filtering by Date and Team ---
   const now = new Date();
   const endDate = new Date();
   endDate.setDate(now.getDate() + daysAhead);
-  const originalEventCount = upcomingEvents.length;
+  let originalEventCount = upcomingEvents.length;
   upcomingEvents = upcomingEvents.filter((event) => {
     const eventTime = new Date(event.commence_time);
     return eventTime > now && eventTime < endDate;
@@ -1187,28 +1226,66 @@ async function getLiveOdds() {
     `Filtered from ${originalEventCount} down to ${upcomingEvents.length} events.`
   );
 
-  // --- Pre-filtering by Odds using the new constants ---
+  const targetTeams = args;
+  const isSpecificGameSearch = targetTeams.length > 0;
+  if (isSpecificGameSearch) {
+    if (targetTeams.length % 2 !== 0) {
+      console.error(
+        "Error: Please provide teams in pairs for a specific game search."
+      );
+      return;
+    }
+    const targetPairs = [];
+    for (let i = 0; i < targetTeams.length; i += 2) {
+      targetPairs.push({
+        teamA: targetTeams[i].toLowerCase(),
+        teamB: targetTeams[i + 1].toLowerCase(),
+      });
+    }
+    console.log(
+      `--- Specific Game Search Mode: Looking for ${targetPairs.length} game(s) ---`
+    );
+    const originalCount = upcomingEvents.length;
+    const foundEvents = upcomingEvents.filter((event) => {
+      const home = event.home_team.toLowerCase();
+      const away = event.away_team.toLowerCase();
+      return targetPairs.some(
+        (pair) =>
+          (home.includes(pair.teamA) && away.includes(pair.teamB)) ||
+          (home.includes(pair.teamB) && away.includes(pair.teamA))
+      );
+    });
+
+    if (foundEvents.length === 0) {
+      console.error(
+        "\nError: Could not find any matching games for the teams provided in the specified date range."
+      );
+      return;
+    }
+    console.log(
+      `Filtered from ${originalCount} down to ${foundEvents.length} matching event(s).`
+    );
+    upcomingEvents = foundEvents;
+  }
+
   if (PREFILTER_MIN_ODDS !== null || PREFILTER_MAX_ODDS !== null) {
     console.log(
       `\n--- Pre-filtering events by odds: Min ${
         PREFILTER_MIN_ODDS ?? "N/A"
       }, Max ${PREFILTER_MAX_ODDS ?? "N/A"} ---`
     );
-    const originalCount = upcomingEvents.length;
+    originalEventCount = upcomingEvents.length;
     upcomingEvents = upcomingEvents.filter((event) => {
       if (
         !event.bookmakers ||
         !event.bookmakers[0] ||
         !event.bookmakers[0].markets[0]
-      ) {
+      )
         return true;
-      }
       const outcomes = event.bookmakers[0].markets[0].outcomes;
       if (outcomes.length < 2) return true;
-
       const odds1 = outcomes[0].price;
       const odds2 = outcomes[1].price;
-
       const minFilter =
         PREFILTER_MIN_ODDS !== null
           ? odds1 >= PREFILTER_MIN_ODDS && odds2 >= PREFILTER_MIN_ODDS
@@ -1217,11 +1294,10 @@ async function getLiveOdds() {
         PREFILTER_MAX_ODDS !== null
           ? odds1 <= PREFILTER_MAX_ODDS && odds2 <= PREFILTER_MAX_ODDS
           : true;
-
       return minFilter && maxFilter;
     });
     console.log(
-      `Filtered from ${originalCount} down to ${upcomingEvents.length} events based on moneyline odds.`
+      `Filtered from ${originalEventCount} down to ${upcomingEvents.length} events based on moneyline odds.`
     );
   }
 
@@ -1230,14 +1306,12 @@ async function getLiveOdds() {
     return;
   }
 
-  // --- Phase 2: Fetching Detailed Odds ---
   console.log("\n--- Phase 2: Fetching detailed odds for each event ---");
   let allGamesData = [];
   try {
     for (const event of upcomingEvents) {
       const sportConfig = SPORT_CONFIG[event.sport_key];
       if (!sportConfig) continue;
-
       const marketsToFetch =
         cliMarkets ||
         sportConfig.markets
@@ -1249,9 +1323,11 @@ async function getLiveOdds() {
         );
         continue;
       }
+      // UPDATED: Added the &bookmakers= parameter to the URL
+      const url = `https://api.the-odds-api.com/v4/sports/${event.sport_key}/events/${event.id}/odds?apiKey=${ODDS_API_KEY}&regions=${REGIONS}&bookmakers=${BOOKMAKERS_TO_FETCH}&markets=${marketsToFetch}&oddsFormat=${ODDS_FORMAT}`;
 
-      const url = `https://api.the-odds-api.com/v4/sports/${event.sport_key}/events/${event.id}/odds?apiKey=${ODDS_API_KEY}&regions=${REGIONS}&markets=${marketsToFetch}&oddsFormat=${ODDS_FORMAT}`;
       const response = await axios.get(url);
+
       if (response.data) {
         allGamesData.push(response.data);
         console.log(
@@ -1273,8 +1349,7 @@ async function getLiveOdds() {
     return;
   }
 
-  // --- Phase 3: Processing and Saving Data ---
-  console.log("\n--- Phase 3: Processing all data ---");
+  console.log("\n--- Phase 3: Processing and Saving Data ---");
   const { processedGameLines, processedPlayerProps } =
     processAllData(allGamesData);
   const dataToSave = {
