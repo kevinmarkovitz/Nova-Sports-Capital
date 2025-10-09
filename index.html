@@ -191,6 +191,31 @@
         background-color: rgba(34, 197, 94, 0.15); /* Greenish highlight */
         border-radius: 4px;
       }
+      .accordion-header {
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--border-primary);
+      }
+      .accordion-header:hover {
+        background-color: var(--bg-tertiary);
+      }
+      .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+      }
+      .accordion-toggle::before {
+        content: '+';
+        font-size: 1.5rem;
+        font-weight: 300;
+        color: var(--text-secondary);
+      }
+      .accordion-header.active .accordion-toggle::before {
+        content: '−';
+      }
     </style>
   </head>
   <body class="p-4 md:p-8">
@@ -298,6 +323,13 @@
               data-view="ev-bets-view"
             >
               +EV Bets
+            </button>
+            <button
+              id="tab-cross-market"
+              class="tab-btn border-transparent text-main-secondary hover:text-main-primary hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+              data-view="cross-market-view"
+            >
+              Cross-Market
             </button>
             <button
               id="tab-odds-screen"
@@ -617,7 +649,121 @@
               class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
             ></div>
           </div>
-
+          <div id="cross-market-view" class="view hidden">
+            <h2 class="text-2xl font-bold text-main-primary mb-8">
+              Arbitrage Finder
+            </h2>
+            <div
+              class="flex flex-wrap items-end gap-4 p-4 mb-6 border border-border-primary rounded-lg bg-tertiary"
+            >
+              <div class="input-group">
+                <label
+                  for="cross-market-sport-filter"
+                  class="text-main-secondary font-medium mb-1 block"
+                  >Sport</label
+                >
+                <select id="cross-market-sport-filter">
+                  <option value="all">All Sports</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label
+                  for="cross-market-search-filter"
+                  class="block text-sm font-medium mb-1 text-main-secondary"
+                  >Search Player/Team</label
+                >
+                <input
+                  type="text"
+                  id="cross-market-search-filter"
+                  placeholder="e.g., Yankees..."
+                  class="w-40"
+                />
+              </div>
+              <div class="input-group">
+                <label
+                  for="cross-market-min-diff"
+                  class="block text-sm font-medium mb-1 text-main-secondary"
+                  >Min Profit (%)</label
+                >
+                <input
+                  type="number"
+                  id="cross-market-min-diff"
+                  value="0"
+                  step="0.01"
+                  class="w-24"
+                />
+              </div>
+              <div class="input-group">
+                <label
+                  for="cross-market-max-diff"
+                  class="block text-sm font-medium mb-1 text-main-secondary"
+                  >Max Profit (%)</label
+                >
+                <input
+                  type="number"
+                  id="cross-market-max-diff"
+                  placeholder="No Max"
+                  class="w-24"
+                />
+              </div>
+              <div class="input-group">
+                <label
+                  for="cross-market-min-odds-filter"
+                  class="block text-sm font-medium mb-1 text-main-secondary"
+                  >Min Odds</label
+                >
+                <input
+                  type="number"
+                  id="cross-market-min-odds-filter"
+                  placeholder="-200"
+                  step="10"
+                  class="w-24"
+                />
+              </div>
+              <div class="input-group">
+                <label
+                  for="cross-market-max-odds-filter"
+                  class="block text-sm font-medium mb-1 text-main-secondary"
+                  >Max Odds</label
+                >
+                <input
+                  type="number"
+                  id="cross-market-max-odds-filter"
+                  placeholder="+200"
+                  step="10"
+                  class="w-24"
+                />
+              </div>
+              <div class="input-group">
+                <label
+                  for="cross-market-book-filter"
+                  class="text-main-secondary font-medium mb-1 block"
+                  >Sportsbook</label
+                >
+                <select id="cross-market-book-filter">
+                  <option value="all">All Books</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label
+                  for="cross-market-market-filter"
+                  class="text-main-secondary font-medium mb-1 block"
+                  >Bet Type</label
+                >
+                <select id="cross-market-market-filter">
+                  <option value="all">All Markets</option>
+                </select>
+              </div>
+            </div>
+            <div
+              id="cross-market-slate"
+              class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+            >
+              <p class="text-main-secondary text-center col-span-full">
+                Scanning markets for arbitrage opportunities...
+              </p>
+            </div>
+          </div>
           <div id="tracker-view" class="view hidden">
             <h2 class="text-2xl font-bold text-main-primary text-center mb-4">
               My Performance Tracker
@@ -725,37 +871,43 @@
             <div id="system-tracked-plays-list" class="space-y-4"></div>
           </div>
 
-          <div id="odds-screen-view" class="view hidden">
+         <div id="odds-screen-view" class="view hidden">
             <div class="flex justify-between items-center mb-6">
-              <div class="flex items-center">
-                <button
-                  id="odds-screen-back-btn"
-                  class="btn btn-secondary mr-4"
-                >
-                  &larr; Back
-                </button>
-                <h2
-                  id="odds-screen-title"
-                  class="text-xl md:text-2xl font-bold text-main-primary"
-                ></h2>
+              <div class="flex items-center gap-4">
+                <button id="odds-screen-back-btn" class="btn btn-secondary hidden">&larr; Back</button>
+                <h2 id="odds-screen-title" class="text-xl md:text-2xl font-bold text-main-primary"></h2>
               </div>
               <div class="flex items-center space-x-3">
-                <span class="text-sm font-medium text-main-secondary"
-                  >Show Vig-Free</span
-                >
-                <label for="vig-free-toggle" class="toggle-switch"
-                  ><input
-                    type="checkbox"
-                    id="vig-free-toggle"
-                    class="sr-only peer" />
-                  <div class="toggle-track"></div
-                ></label>
+                 <div id="sport-filter-container" class="input-group">
+                  <label for="odds-screen-sport-filter" class="sr-only">Filter by Sport</label>
+                  <select id="odds-screen-sport-filter"></select>
+                </div>
+                 <div id="vig-free-toggle-container" class="flex items-center space-x-3 hidden">
+                    <span class="text-sm font-medium text-main-secondary">Show Vig-Free</span>
+                    <label for="vig-free-toggle" class="relative inline-block w-10 h-6">
+                      <input type="checkbox" id="vig-free-toggle" class="sr-only peer" />
+                      <div class="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-tertiary border border-border-primary rounded-full transition-colors peer-checked:bg-accent-red peer-checked:border-accent-red"></div>
+                      <div class="absolute cursor-pointer top-1 left-1 bg-text-secondary w-4 h-4 rounded-full transition-transform peer-checked:translate-x-4 peer-checked:bg-white"></div>
+                    </label>
+                </div>
               </div>
             </div>
-            <p
-              id="odds-screen-subtitle"
-              class="text-main-secondary -mt-4 mb-6"
-            ></p>
+
+            <p id="odds-screen-subtitle" class="text-main-secondary -mt-4 mb-6"></p>
+            
+<div id="market-nav-wrapper" class="hidden">
+              <div class="flex items-center gap-4 border-b border-border-primary pb-3 mb-4">
+                <div class="input-group">
+                    <label for="market-select-dropdown" class="sr-only">Select Market</label>
+                    <select id="market-select-dropdown"></select>
+                </div>
+                <div class="input-group">
+                    <label for="prop-search-input" class="sr-only">Search Props</label>
+                    <input type="search" id="prop-search-input" placeholder="Search player..." class="w-48">
+                </div>
+              </div>
+            </div>
+            
             <div id="best-line-summary" class="mb-6"></div>
             <div id="odds-comparison-container" class="space-y-6"></div>
           </div>
@@ -807,7 +959,7 @@
       </div>
     </div>
 
-    <div
+<div
       id="odds-modal"
       class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm hidden"
     >
@@ -820,7 +972,8 @@
             ></h3>
             <p id="odds-modal-subtitle" class="text-sm text-main-secondary"></p>
           </div>
-          <div class="flex items-center space-x-3">
+        </div>
+         <div class="flex items-center space-x-3">
             <span class="text-sm font-medium text-main-secondary"
               >Show Vig-Free</span
             >
@@ -841,7 +994,24 @@
               ></div>
             </label>
           </div>
+        <div id="odds-modal-consensus-summary" class="mb-4"></div>
+
+        <div
+          id="odds-modal-table-container"
+          class="mt-4 max-h-[60vh] overflow-y-auto"
+        ></div>
+
+        <div class="mt-6 flex justify-end">
+          <button
+            id="odds-modal-close-btn"
+            type="button"
+            class="btn btn-secondary"
+          >
+            Close
+          </button>
         </div>
+      </div>
+    </div>
 
         <div
           id="odds-modal-table-container"

@@ -6,6 +6,7 @@ import { UI } from "./ui.js";
 import { OddsScreen } from "./odds_screen.js";
 import { TEAM_LOGO_MAP } from "./mappings.js";
 import { OddsModal } from "./odds_modal.js";
+import { CrossMarket } from "./cross_market.js";
 
 export const App = {
   config: {
@@ -116,6 +117,15 @@ export const App = {
       if (odds > 0) return `+${Math.round(odds)}`;
       return Math.round(odds);
     },
+    formatDecimalOdds(odds) {
+      if (odds === null || typeof odds === "undefined") return "-";
+      // Rounds to 2 decimal places and ensures .00 is shown
+      const rounded = (Math.round(odds * 100) / 100).toFixed(2);
+      if (parseFloat(rounded) > 0) {
+        return `+${rounded}`;
+      }
+      return rounded;
+    },
     LEAGUE_FOLDER_MAP: {
       NFL: "nfl",
       "NFL Football": "nfl", // Add likely variation
@@ -168,14 +178,16 @@ export const App = {
       );
     } catch (error) {
       console.error("Failed to load initial data:", error);
-      this.elements.gameSlate.innerHTML = `<p class="text-center text-red-500 col-span-full">${error.message}</p>`;
-    } finally {
+      this.elements.gameSlate.innerHTML = `<p class="text-center text-red-500 col-span-full">${error.message}. Please run 'node fetch-odds.js' in your backend to generate data files.</p>`;
       this.elements.loadingSpinner.classList.add("hidden");
+      return;
     }
+    this.elements.loadingSpinner.classList.add("hidden");
 
     UI.init();
     Dashboard.init();
     EVBets.init();
+    CrossMarket.init();
     Tracker.init();
     System.init();
     OddsScreen.init();
