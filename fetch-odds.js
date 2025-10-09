@@ -424,140 +424,31 @@ const GAME_LINE_BOOK_WEIGHTS = {
 };
 
 const PROP_BOOK_WEIGHTS = {
-  pinnacle: {
-    type: "sharp",
-    weights: {
-      default: 3.0,
-      baseball_mlb: 2.6,
-      americanfootball_nfl: 2.8,
-      americanfootball_ncaaf: 2.8,
-    },
-  },
-  novig: {
-    type: "sharp",
-    weights: {
-      default: 1.25,
-      baseball_mlb: 2.5,
-      americanfootball_nfl: 3.55,
-      americanfootball_ncaaf: 2.5,
-    },
-  },
-  prophetx: {
-    type: "sharp",
-    weights: {
-      default: 2.0,
-      baseball_mlb: 2.0,
-      americanfootball_nfl: 3.1,
-      americanfootball_ncaaf: 2.75,
-    },
-  },
-  lowvig: { type: "sharp", weights: { default: 2.0, baseball_mlb: 1.75 } },
-  betonlineag: {
-    type: "sharp",
-    weights: {
-      default: 2.0,
-      baseball_mlb: 1.75,
-      americanfootball_nfl: 2.25,
-      americanfootball_ncaaf: 2.0,
-    },
-  },
-  fanduel: {
-    type: "sharp",
-    weights: { default: 1, baseball_mlb: 2.75, americanfootball_nfl: 1.75 },
-  },
-  draftkings: {
-    type: "sharp",
-    weights: {
-      default: 0.2,
-      mma_mixed_martial_arts: 0.1,
-      americanfootball_ncaaf: 0.1,
-    },
-  },
-  williamhill_us: {
-    type: "market",
-    weights: { default: 0.3, baseball_mlb: 0.5, mma_mixed_martial_arts: 0.75 },
-  },
-  betmgm: {
-    type: "market",
-    weights: {
-      default: 2.5,
-      baseball_mlb: 2.0,
-      basketball_wnba: 1.25,
-      americanfootball_nfl: 4.45,
-      americanfootball_ncaaf: 2.75,
-    },
-  },
-  espnbet: {
-    type: "market",
-    weights: {
-      default: 1.25,
-      mma_mixed_martial_arts: 1.0,
-      basketball_wnba: 0.75,
-    },
-  },
-  fanatics: {
-    type: "market",
-    weights: {
-      default: 1.25,
-      baseball_mlb: 1.75,
-      mma_mixed_martial_arts: 1.0,
-      basketball_wnba: 0.9,
-      americanfootball_nfl: 2.97,
-      americanfootball_ncaaf: 1.5,
-    },
-  },
-  hardrockbet: {
-    type: "market",
-    weights: {
-      default: 1.25,
-      baseball_mlb: 1.75,
-      mma_mixed_martial_arts: 1.75,
-      americanfootball_nfl: 4.9,
-      americanfootball_ncaaf: 1.7,
-    },
-  },
-  bet365_au: {
-    type: "market",
-    weights: {
-      default: 1.25,
-      baseball_mlb: 1.75,
-      mma_mixed_martial_arts: 1.75,
-      americanfootball_nfl: 4.9,
-      americanfootball_ncaaf: 1.7,
-    },
-  },
-  betrivers: {
-    type: "market",
-    weights: {
-      default: 2.25,
-      baseball_mlb: 3,
-      mma_mixed_martial_arts: 2.5,
-      basketball_wnba: 4,
-      americanfootball_nfl: 5.25,
-      americanfootball_ncaaf: 4.5,
-    },
-  },
-  ballybet: {
-    type: "market",
-    weights: {
-      default: 2.25,
-      baseball_mlb: 3,
-      mma_mixed_martial_arts: 2.5,
-      basketball_wnba: 4,
-      americanfootball_nfl: 4.0,
-      americanfootball_ncaaf: 4.5,
-    },
-  },
-  fliff: {
-    type: "market",
-    weights: {
-      default: 1.0,
-      baseball_mlb: 1.05,
-      basketball_wnba: 1.5,
-      americanfootball_nfl: 1.25,
-      americanfootball_ncaaf: 0.75,
-    },
-  },
+  // --- Sharp Books (Percentages sum to 100% of Sharp Consensus) ---
+  pinnacle: { type: "sharp", weights: { default: 3.0 } }, // 22.22%
+  betonlineag: { type: "sharp", weights: { default: 2.5 } }, // 18.52%
+  novig: { type: "sharp", weights: { default: 2.0 } }, // 14.81%
+  prophetx: { type: "sharp", weights: { default: 2.0 } }, // 14.81%
+  lowvig: { type: "sharp", weights: { default: 2.0 } }, // 14.81%
+  betfair_ex_eu: { type: "sharp", weights: { default: 2.0 } }, // 14.81%
+  draftkings: { type: "sharp", weights: { default: 0.25 } },
+  fanduel: { type: "sharp", weights: { default: 1.0 } },
+
+  // --- Market Books (Percentages sum to 100% of Market Consensus) ---
+  // Tier 1: Squarest Books (Total: ~48.9% of Market Weight)
+  betrivers: { type: "market", weights: { default: 7.5 } }, // 16.67%
+  ballybet: { type: "market", weights: { default: 7.5 } }, // 16.67%
+  fliff: { type: "market", weights: { default: 7.0 } }, // 15.56%
+
+  // Tier 2: MGM/HardRock/Fanatics (Total: ~33.3% of Market Weight)
+  betmgm: { type: "market", weights: { default: 5.0 } }, // 11.11%
+  hardrockbet: { type: "market", weights: { default: 5.0 } }, // 11.11%
+  fanatics: { type: "market", weights: { default: 5.0 } }, // 11.11%
+
+  // Tier 3: Mid-Tier Market Books (Total: ~13.3% of Market Weight)
+  espnbet: { type: "market", weights: { default: 2.0 } }, // 4.44%
+  bet365_au: { type: "market", weights: { default: 2.0 } }, // 4.44%
+  williamhill_us: { type: "market", weights: { default: 2.0 } }, // 4.44%
 };
 
 const EV_TAB_WEIGHTS = {
@@ -1430,6 +1321,110 @@ function logSystemPicks(processedGameLines) {
   }
 }
 
+function logBookmakerDeviations(processedGameLines, processedPlayerProps) {
+  const newLogs = [];
+  const timestamp = new Date().toISOString();
+
+  const processMarketData = (item, marketKey, line) => {
+    // Ensure we have a consensus line and bookmaker odds to compare
+    if (!line.trueOdds || !line.bookmakerOdds) return;
+
+    const novaLineProbA = americanToImplied(line.trueOdds.oddsA);
+    const novaLineProbB = americanToImplied(line.trueOdds.oddsB);
+
+    for (const book of line.bookmakerOdds) {
+      // Ensure the bookmaker has a valid, vig-free two-way line
+      if (
+        !book.trueOdds ||
+        book.trueOdds.oddsA === null ||
+        book.trueOdds.oddsB === null
+      )
+        continue;
+
+      const bookProbA = americanToImplied(book.trueOdds.oddsA);
+      const bookProbB = americanToImplied(book.trueOdds.oddsB);
+
+      // Log the deviation for Side A (Home Team / Over)
+      newLogs.push({
+        timestamp,
+        gameId: item.id || item.gameId,
+        sport: item.sport,
+        marketKey,
+        point: line.point !== undefined ? line.point : null,
+        player: item.player || null,
+        bookmaker: book.bookmaker,
+        side: "A",
+        bookmakerTrueProb: bookProbA,
+        novaLineTrueProb: novaLineProbA,
+        deviation: bookProbA - novaLineProbA,
+      });
+
+      // Log the deviation for Side B (Away Team / Under)
+      newLogs.push({
+        timestamp,
+        gameId: item.id || item.gameId,
+        sport: item.sport,
+        marketKey,
+        point: line.point !== undefined ? line.point : null,
+        player: item.player || null,
+        bookmaker: book.bookmaker,
+        side: "B",
+        bookmakerTrueProb: bookProbB,
+        novaLineTrueProb: novaLineProbB,
+        deviation: bookProbB - novaLineProbB,
+      });
+    }
+  };
+
+  // Process all game lines (Moneyline, Spreads, Totals)
+  for (const game of processedGameLines) {
+    if (game.moneyline) processMarketData(game, "moneyline", game.moneyline[0]);
+    if (game.spreads)
+      game.spreads.forEach((line) => processMarketData(game, "spreads", line));
+    if (game.totals)
+      game.totals.forEach((line) => processMarketData(game, "totals", line));
+  }
+
+  // Process all player props
+  for (const prop of processedPlayerProps) {
+    // Only process props that have a two-way market (Over/Under)
+    if (prop.trueOdds) {
+      processMarketData(prop, prop.market, prop);
+    }
+  }
+
+  if (newLogs.length > 0) {
+    let existingLogs = [];
+    try {
+      if (fs.existsSync("bookmaker_analytics.json")) {
+        const fileContent = fs.readFileSync(
+          "bookmaker_analytics.json",
+          "utf-8"
+        );
+        // Ensure file is not empty before parsing
+        if (fileContent) existingLogs = JSON.parse(fileContent);
+      }
+    } catch (e) {
+      console.error(
+        "Error reading or parsing bookmaker_analytics.json:",
+        e.message
+      );
+    }
+
+    // Append new logs to existing ones to build the historical dataset
+    const allLogs = existingLogs.concat(newLogs);
+    fs.writeFileSync(
+      "bookmaker_analytics.json",
+      JSON.stringify(allLogs, null, 2)
+    );
+    console.log(
+      `\nLogged ${newLogs.length} new bookmaker deviation records to bookmaker_analytics.json.`
+    );
+  } else {
+    console.log("\nNo new bookmaker deviation data to log.");
+  }
+}
+
 async function getLiveOdds() {
   if (!ODDS_API_KEY) {
     console.error("ERROR: Please add your key from The Odds API.");
@@ -1634,6 +1629,9 @@ async function getLiveOdds() {
 
   console.log("\n--- Phase 4: Logging System Picks for Backtesting ---");
   logSystemPicks(processedGameLines);
+
+  console.log("\n--- Phase 5: Logging Granular Bookmaker Analytics ---");
+  logBookmakerDeviations(processedGameLines, processedPlayerProps);
 }
 
 getLiveOdds();
