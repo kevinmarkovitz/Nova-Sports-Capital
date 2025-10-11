@@ -650,4 +650,45 @@ export const TEAM_LOGO_MAP = {
   "los angeles rams": "los-angeles-rams",
   "san francisco 49ers": "san-francisco-49ers",
   "seattle seahawks": "seattle-seahawks",
+
+  // --- NHL ---
+  // Atlantic Division
+  "boston bruins": "boston-bruins",
+  "buffalo sabres": "buffalo-sabres",
+  "detroit red wings": "detroit-red-wings",
+  "florida panthers": "florida-panthers",
+  "montreal canadiens": "montreal-canadiens",
+  "ottawa senators": "ottawa-senators",
+  "tampa bay lightning": "tampa-bay-lightning",
+  "toronto maple leafs": "toronto-maple-leafs",
+
+  // Metropolitan Division
+  "carolina hurricanes": "carolina-hurricanes",
+  "columbus blue jackets": "columbus-blue-jackets",
+  "new jersey devils": "new-jersey-devils",
+  "new york islanders": "new-york-islanders",
+  "new york rangers": "new-york-rangers",
+  "philadelphia flyers": "philadelphia-flyers",
+  "pittsburgh penguins": "pittsburgh-penguins",
+  "washington capitals": "washington-capitals",
+
+  // Central Division
+  "chicago blackhawks": "chicago-blackhawks",
+  "colorado avalanche": "colorado-avalanche",
+  "dallas stars": "dallas-stars",
+  "minnesota wild": "minnesota-wild",
+  "nashville predators": "nashville-predators",
+  "st. louis blues": "st-louis-blues",
+  "utah mammoth": "utah-mammoth",
+  "winnipeg jets": "winnipeg-jets",
+
+  // Pacific Division
+  "anaheim ducks": "anaheim-ducks",
+  "calgary flames": "calgary-flames",
+  "edmonton oilers": "edmonton-oilers",
+  "los angeles kings": "los-angeles-kings",
+  "san jose sharks": "san-jose-sharks",
+  "seattle kraken": "seattle-kraken",
+  "vancouver canucks": "vancouver-canucks",
+  "vegas golden knights": "vegas-golden-knights",
 };

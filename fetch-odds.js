@@ -7,12 +7,12 @@ const REGIONS = "us,us2,eu,au,us_ex";
 const ODDS_FORMAT = "american";
 const REQUEST_DELAY = 1000;
 const FETCH_DAYS_AHEAD = 1;
-const ALT_LINE_RANGE_LIMIT = 3.0; // For spreads and totals, limit alt lines to this range from main line
+const ALT_LINE_RANGE_LIMIT = 0.5; // For spreads and totals, limit alt lines to this range from main line
 const MIN_ODDS_LIMIT = -5000;
 const MAX_ODDS_LIMIT = 5000;
 const PREFILTER_MIN_ODDS = null; // Example: Ignores games with odds below.
 const PREFILTER_MAX_ODDS = null; // Example: Ignores games with odds above.
-const MIN_EDGE_THRESHOLD_FOR_LOGGING = 0.005; // Backtesting: Only log system picks with an edge > 1%
+const MIN_EDGE_THRESHOLD_FOR_LOGGING = 0.0025; // Backtesting: Only log system picks with an edge > .25%
 const BACKTEST_BANKROLL = 10000;
 const MIN_BOOKS_FOR_CONSENSUS = 5;
 
@@ -197,17 +197,16 @@ const MARKET_DEFINITIONS = {
   ],
 };
 
-// To enable a sport, uncomment its block.
 const SPORT_CONFIG = {
   // americanfootball_nfl: {
   //   markets: [
   //     "gameLines",
-  //     "alternateLines",
-  //     "footballPassingProps",
-  //     "footballRushingProps",
-  //     "footballReceivingProps",
-  //     "footballComboProps",
-  //     "footballTdScorerProps",
+  //     // "alternateLines",
+  //     // "footballPassingProps",
+  //     // "footballRushingProps",
+  //     // "footballReceivingProps",
+  //     // "footballComboProps",
+  //     // "footballTdScorerProps",
   //     // "footballKickingProps",
   //     // "footballDefensiveProps",
   //     // "footballOneWayProps",
@@ -219,9 +218,9 @@ const SPORT_CONFIG = {
   //     // "footballAlternateDefensiveProps",
   //   ],
   // },
-  // americanfootball_ncaaf: {
-  //   markets: ["gameLines", "alternateLines"],
-  // },
+  americanfootball_ncaaf: {
+    markets: ["gameLines", "alternateLines"],
+  },
   // basketball_nba: {
   //   markets: ["gameLines", "alternateLines", "nbaPlayerProps"],
   // },
@@ -234,16 +233,16 @@ const SPORT_CONFIG = {
       // "nhlOneWayProps",
     ],
   },
-  baseball_mlb: {
-    markets: [
-      "gameLines",
-      // "mlbBattingProps",
-      // "mlbPitchingProps",
-      // "mlbOneWayProps",
-      // "mlbAlternateBattingProps",
-      // "mlbAlternatePitchingProps",
-    ],
-  },
+  // baseball_mlb: {
+  //   markets: [
+  //     "gameLines",
+  //     // "mlbBattingProps",
+  //     // "mlbPitchingProps",
+  //     // "mlbOneWayProps",
+  //     // "mlbAlternateBattingProps",
+  //     // "mlbAlternatePitchingProps",
+  //   ],
+  // },
   // basketball_wnba: {
   //   markets: [
   //     "gameLines",
@@ -252,147 +251,6 @@ const SPORT_CONFIG = {
   // },
 };
 
-// const GAME_LINE_BOOK_WEIGHTS = {
-//   pinnacle: {
-//     type: "sharp",
-//     weights: {
-//       default: 3.0,
-//       americanfootball_nfl: 3.0,
-//       americanfootball_ncaaf: 2.8,
-//     },
-//   },
-//   betfair_ex_eu: { type: "sharp", weights: { default: 2.0 } },
-
-//   novig: {
-//     type: "sharp",
-//     weights: {
-//       default: 2.0,
-//       basketball_wnba: 1.85,
-//       americanfootball_nfl: 2.75,
-//       americanfootball_ncaaf: 2.5,
-//     },
-//   },
-//   prophetx: {
-//     type: "sharp",
-//     weights: {
-//       default: 2.0,
-//       baseball_mlb: 2.0,
-//       americanfootball_nfl: 2.9,
-//       americanfootball_ncaaf: 2.75,
-//     },
-//   },
-//   lowvig: {
-//     type: "sharp",
-//     weights: { default: 2.0, americanfootball_nfl: 1.5, baseball_mlb: 1.5 },
-//   },
-//   betonlineag: {
-//     type: "sharp",
-//     weights: {
-//       default: 2.0,
-//       baseball_mlb: 1.5,
-//       americanfootball_nfl: 2.0,
-//       americanfootball_ncaaf: 1.5,
-//     },
-//   },
-//   fanduel: {
-//     type: "market",
-//     weights: { default: 0.1, mma_mixed_martial_arts: 0.5 },
-//   },
-//   draftkings: {
-//     type: "market",
-//     weights: {
-//       default: 0.25,
-//       mma_mixed_martial_arts: 0.1,
-//       americanfootball_ncaaf: 0.1,
-//     },
-//   },
-//   williamhill_us: {
-//     type: "market",
-//     weights: { default: 0.3, baseball_mlb: 0.5, mma_mixed_martial_arts: 0.75 },
-//   },
-//   betmgm: {
-//     type: "market",
-//     weights: {
-//       default: 1.5,
-//       baseball_mlb: 1.65,
-//       basketball_wnba: 1.25,
-//       americanfootball_nfl: 1.75,
-//       americanfootball_ncaaf: 1.75,
-//     },
-//   },
-//   espnbet: {
-//     type: "market",
-//     weights: {
-//       default: 1.25,
-//       baseball_mlb: 0.75,
-//       mma_mixed_martial_arts: 1.0,
-//       basketball_wnba: 0.75,
-//     },
-//   },
-//   fanatics: {
-//     type: "market",
-//     weights: {
-//       default: 1.25,
-//       baseball_mlb: 0.75,
-//       mma_mixed_martial_arts: 1.0,
-//       basketball_wnba: 0.9,
-//       americanfootball_nfl: 1.5,
-//       americanfootball_ncaaf: 1.4,
-//     },
-//   },
-//   hardrockbet: {
-//     type: "market",
-//     weights: {
-//       default: 1.25,
-//       baseball_mlb: 1.65,
-//       mma_mixed_martial_arts: 1.75,
-//       americanfootball_nfl: 1.75,
-//       americanfootball_ncaaf: 1.75,
-//     },
-//   },
-//   bet365_au: {
-//     type: "market",
-//     weights: {
-//       default: 1.25,
-//       baseball_mlb: 1.65,
-//       mma_mixed_martial_arts: 1.75,
-//       americanfootball_nfl: 1.75,
-//       americanfootball_ncaaf: 1.75,
-//     },
-//   },
-//   betrivers: {
-//     type: "market",
-//     weights: {
-//       default: 2.25,
-//       baseball_mlb: 4.75,
-//       mma_mixed_martial_arts: 2.5,
-//       basketball_wnba: 3.25,
-//       americanfootball_nfl: 4.75,
-//       americanfootball_ncaaf: 4.75,
-//     },
-//   },
-//   ballybet: {
-//     type: "market",
-//     weights: {
-//       default: 2.25,
-//       baseball_mlb: 4.75,
-//       mma_mixed_martial_arts: 2.5,
-//       basketball_wnba: 3.25,
-//       americanfootball_nfl: 4.65,
-//       americanfootball_ncaaf: 4.65,
-//     },
-//   },
-//   fliff: {
-//     type: "market",
-//     weights: {
-//       default: 1.0,
-//       baseball_mlb: 4.25,
-//       basketball_wnba: 3.3,
-//       americanfootball_nfl: 2.3,
-//       americanfootball_ncaaf: 2.5,
-//     },
-//   },
-// };
 const GAME_LINE_BOOK_WEIGHTS = {
   // --- Sharp Books (Percentages sum to 100% of Sharp Consensus) ---
   pinnacle: { type: "sharp", weights: { default: 3.0 } }, // 22.22%
@@ -648,33 +506,26 @@ function processAllData(allGames) {
     }
 
     if (hasGameLines) {
-      // --- CORRECTED: Alternate line filtering logic ---
+      // --- RE-INTRODUCED FILTERING LOGIC ---
       const marketsToFilter = ["spreads", "totals"];
       for (const market of marketsToFilter) {
         if (gameData[market] && gameData[market].length > 1) {
-          // First, find the line with the point value closest to zero. This is the true main line.
+          // Find the main line (the one with the most bookmakers)
           const mainLine = gameData[market].reduce((prev, curr) =>
-            Math.abs(curr.point) < Math.abs(prev.point) ? curr : prev
+            (curr.bookmakerOdds?.length || 0) >
+            (prev.bookmakerOdds?.length || 0)
+              ? curr
+              : prev
           );
 
           const mainLinePoint = mainLine.point;
-
-          // Now, filter all other lines based on the range from that true main line.
           const lowerBound = mainLinePoint - ALT_LINE_RANGE_LIMIT;
           const upperBound = mainLinePoint + ALT_LINE_RANGE_LIMIT;
 
-          const originalLineCount = gameData[market].length;
+          // Filter out lines that are outside the desired range
           gameData[market] = gameData[market].filter(
             (line) => line.point >= lowerBound && line.point <= upperBound
           );
-
-          if (gameData[market].length < originalLineCount) {
-            console.log(
-              `- Filtered ${
-                originalLineCount - gameData[market].length
-              } alternate ${market} lines for ${game.home_team}.`
-            );
-          }
         }
       }
       processedGameLines.push(gameData);
@@ -824,6 +675,7 @@ function processMoneylineMarket(game, allOdds, bookWeights) {
       marketOdds,
       trueMarketOdds,
       evTabTrueOdds,
+      sharpBookCount: sharpOdds.length,
       bookmakerOdds: allBookmakerOdds,
     };
   }
@@ -942,6 +794,7 @@ function processGroupedMarket(game, allOddsForMarket, bookWeights, marketKey) {
           marketOdds,
           trueMarketOdds,
           evTabTrueOdds,
+          sharpBookCount: sharpOdds.length,
           bookmakerOdds: allBookmakerOdds,
         });
       }
@@ -1156,15 +1009,16 @@ function logSystemPicks(processedGameLines) {
           lineToLog = game[marketKey][0];
         }
       }
-
       if (
         !lineToLog ||
+        !lineToLog.sharpBookCount ||
+        lineToLog.sharpBookCount < 2 ||
         !lineToLog.trueOdds ||
         !lineToLog.trueMarketOdds ||
         !lineToLog.marketOdds
-      )
+      ) {
         continue;
-
+      }
       const line = lineToLog;
 
       const trueProbA = americanToImplied(line.trueOdds.oddsA);
@@ -1205,6 +1059,7 @@ function logSystemPicks(processedGameLines) {
               side: "A",
               odds: bestBet.price,
               bookmaker: bestBet.bookmaker,
+              bookmakerCount: line.bookmakerOdds.length,
               edge: edgeA,
               wager_full: (BACKTEST_BANKROLL * fullKellyFraction).toFixed(2),
               percent_full: fullKellyFraction.toFixed(4),
@@ -1268,6 +1123,7 @@ function logSystemPicks(processedGameLines) {
               side: "B",
               odds: bestBet.price,
               bookmaker: bestBet.bookmaker,
+              bookmakerCount: line.bookmakerOdds.length,
               edge: edgeB,
               wager_full: (BACKTEST_BANKROLL * fullKellyFraction).toFixed(2),
               percent_full: fullKellyFraction.toFixed(4),
