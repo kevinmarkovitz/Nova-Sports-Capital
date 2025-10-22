@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>True Odds Beta</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-primary: #f8fafc; /* slate-50 */
+        --bg-secondary: #e2e8f0; /* slate-200 */
+        --bg-tertiary: #f1f5f9; /* slate-100 */
+        --text-primary: #0f172a; /* slate-900 */
+        --text-secondary: #334155; /* slate-700 */
+        --border-primary: #cbd5e1; /* slate-300 */
+        --accent-red: #dc2626; /* red-600 */
+        --accent-blue: #2563eb; /* blue-600 */
+        --input-bg: #ffffff;
+        --input-text: #000000;
+        --input-placeholder: #64748b; /* slate-500 */
+      }
+
+      html[data-theme="dark"] {
+        --bg-primary: #0f172a; /* slate-900 */
+        --bg-secondary: #1e293b; /* slate-800 */
+        --bg-tertiary: #334155; /* slate-700 */
+        --text-primary: #f1f5f9; /* slate-100 */
+        --text-secondary: #94a3b8; /* slate-400 */
+        --border-primary: #334155; /* slate-700 */
+        --accent-red: #ef4444; /* red-500 */
+        --accent-blue: #3b82f6; /* blue-500 */
+        --input-bg: #ffffff;
+        --input-text: #000000;
+        --input-placeholder: #64748b;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-secondary);
+      }
+
+      .main-container {
+        background-color: var(--bg-secondary);
+        border: 1px solid var(--border-primary);
+      }
+
+      .text-main-primary {
+        color: var(--text-primary);
+      }
+      .text-main-secondary {
+        color: var(--text-secondary);
+      }
+      .text-accent-red {
+        color: var(--accent-red);
+      }
+      .text-accent-blue {
+        color: var(--accent-blue);
+      }
+
+      .input-group input,
+      .input-group select {
+        background-color: var(--input-bg) !important;
+        color: var(--input-text) !important;
+        border-color: var(--border-primary) !important;
+        @apply w-full rounded-md p-2 placeholder-slate-500 focus:outline-none focus:ring-2 transition;
+      }
+
+      html[data-theme="light"] .input-group input,
+      html[data-theme="light"] .input-group select {
+        @apply focus:ring-red-500;
+      }
+
+      html[data-theme="dark"] .input-group input,
+      html[data-theme="dark"] .input-group select {
+        @apply focus:ring-red-500;
+      }
+
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus,
+      input:-webkit-autofill:active {
+        -webkit-text-fill-color: var(--input-text) !important;
+        -webkit-box-shadow: 0 0 0 30px var(--input-bg) inset !important;
+        transition: background-color 5000s ease-in-out 0s;
+      }
+      .has-positive-ev {
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.7) !important;
+        border-color: #22c55e !important;
+      }
+      .best-line-highlight {
+        border-color: #f59e0b !important;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.6) !important;
+      }
+      .btn {
+        @apply px-4 py-2 rounded-md font-semibold text-white transition;
+      }
+      .btn-primary {
+        background-color: var(--accent-red);
+      }
+      .btn-primary:hover {
+        filter: brightness(1.1);
+      }
+      .btn-secondary {
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+      }
+      .btn-secondary:hover {
+        filter: brightness(0.9);
+      }
+      .btn-danger {
+        @apply bg-red-800 hover:bg-red-900;
+      }
+      .btn-quick-add {
+        background-color: var(--bg-tertiary);
+        color: var(--text-secondary);
+      }
+      .btn-quick-add:hover {
+        filter: brightness(0.9);
+      }
+      .result-card,
+      .sportsbook-row {
+        background-color: var(--bg-secondary);
+        border: 1px solid var(--border-primary);
+      }
+      .section-divider {
+        border-color: var(--border-primary);
+        @apply border-t-2 my-8;
+      }
+      .tooltip {
+        position: relative;
+        display: inline-block;
+      }
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 220px;
+        background-color: #1e293b;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 8px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -110px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        font-size: 0.8rem;
+        line-height: 1.2;
+      }
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body class="flex items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-5xl mx-auto">
+      <div class="main-container backdrop-blur-sm p-8 rounded-2xl shadow-2xl">
+        <div class="flex justify-between items-start mb-4">
+          <div class="flex flex-col items-center w-full text-center">
+            <img
+              src="https://placehold.co/300x100/263959/E53B3A?text=NOVA+SPORTS+CAPITAL"
+              alt="Nova Sports Capital Logo"
+              class="h-16 w-auto mb-2 rounded"
+            />
+            <p class="text-xs text-main-secondary tracking-widest">
+              TRADING COMPANY
+            </p>
+          </div>
+          <button
+            id="theme-toggle"
+            class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white"
+          >
+            <svg
+              id="theme-icon-sun"
+              class="h-6 w-6 text-slate-300 hidden"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+              ></path>
+            </svg>
+            <svg
+              id="theme-icon-moon"
+              class="h-6 w-6 text-slate-300"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        <p class="text-center text-main-secondary mb-8">
+          A professional tool to find your edge in the sports betting market.
+        </p>
+
+        <!-- Market Type Toggle -->
+        <div class="flex justify-center mb-8">
+          <div class="bg-tertiary p-1 rounded-full flex items-center space-x-1">
+            <button id="mode-sides" class="btn btn-primary px-6">Sides</button>
+            <button id="mode-totals" class="btn btn-secondary px-6">
+              Totals
+            </button>
+          </div>
+        </div>
+
+        <!-- Team Name Inputs / Game Total Input -->
+        <div
+          id="sides-inputs"
+          class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
+        >
+          <div class="input-group">
+            <label
+              for="team-name-a"
+              class="block text-sm font-medium mb-1 text-main-secondary"
+              >Team/Side A Name</label
+            >
+            <input
+              type="text"
+              id="team-name-a"
+              placeholder="e.g., Team Alpha"
+            />
+          </div>
+          <div class="input-group">
+            <label
+              for="team-name-b"
+              class="block text-sm font-medium mb-1 text-main-secondary"
+              >Team/Side B Name</label
+            >
+            <input
+              type="text"
+              id="team-name-b"
+              placeholder="e.g., Team Bravo"
+            />
+          </div>
+        </div>
+        <div
+          id="totals-inputs"
+          class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 hidden"
+        >
+          <div class="input-group">
+            <label
+              for="game-description"
+              class="block text-sm font-medium mb-1 text-main-secondary"
+              >Game Description</label
+            >
+            <input
+              type="text"
+              id="game-description"
+              placeholder="e.g., Lakers vs Celtics"
+            />
+          </div>
+          <div class="input-group">
+            <label
+              for="game-total"
+              class="block text-sm font-medium mb-1 text-main-secondary"
+              >Game Total</label
+            >
+            <input type="number" id="game-total" placeholder="e.g., 48.5" />
+          </div>
+        </div>
+
+        <!-- Sharp Books Section -->
+        <div>
+          <h2
+            class="text-2xl font-semibold text-accent-red mb-4 flex items-center"
+          >
+            Sharp Books
+            <span class="tooltip ml-2">
+              <svg
+                class="h-5 w-5 text-main-secondary"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V14a1 1 0 11-2 0v-1.17A3.001 3.001 0 017 8a3 3 0 012.134-2.87A1 1 0 0010 7zm0 10a1 1 0 100-2 1 1 0 000 2z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+              <span class="tooltiptext"
+                >Enter odds from the sharpest sportsbooks and exchanges (e.g.,
+                Pinnacle, Circa, P2P Exchanges). These books accept professional
+                action and have the most accurate lines.</span
+              >
+            </span>
+          </h2>
+          <div
+            id="sharp-quick-add-buttons"
+            class="flex flex-wrap gap-2 mb-4"
+          ></div>
+          <div class="hidden md:grid grid-cols-12 gap-4 mb-2 px-3">
+            <h3 class="col-span-4 font-semibold text-main-primary">
+              Sportsbook
+            </h3>
+            <h3
+              id="sharp-odds-header"
+              class="col-span-3 font-semibold text-main-primary text-center"
+            >
+              Odds (A / B)
+            </h3>
+            <h3
+              class="col-span-4 font-semibold text-main-primary text-center flex items-center justify-center"
+            >
+              Weight
+              <span class="tooltip ml-2">
+                <svg
+                  class="h-5 w-5 text-main-secondary"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V14a1 1 0 11-2 0v-1.17A3.001 3.001 0 017 8a3 3 0 012.134-2.87A1 1 0 0010 7zm0 10a1 1 0 100-2 1 1 0 000 2z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span class="tooltiptext"
+                  >Assign a higher weight to books you consider sharper. A
+                  weight of 2 gives a book twice the influence of one with a
+                  weight of 1.</span
+                >
+              </span>
+            </h3>
+            <div class="col-span-1"></div>
+          </div>
+          <div id="sharp-sportsbook-rows" class="space-y-4"></div>
+          <div class="mt-4">
+            <button id="add-sharp-book-btn" class="btn btn-secondary w-full">
+              Add Custom Sharp Book
+            </button>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Market Books Section -->
+        <div>
+          <h2
+            class="text-2xl font-semibold text-accent-blue mb-4 flex items-center"
+          >
+            Market Books
+            <span class="tooltip ml-2">
+              <svg
+                class="h-5 w-5 text-main-secondary"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V14a1 1 0 11-2 0v-1.17A3.001 3.001 0 017 8a3 3 0 012.134-2.87A1 1 0 0010 7zm0 10a1 1 0 100-2 1 1 0 000 2z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+              <span class="tooltiptext"
+                >Enter odds from recreational sportsbooks (e.g., FanDuel,
+                DraftKings). These books cater to the public and are used to
+                find inefficiencies against the sharp line.</span
+              >
+            </span>
+          </h2>
+          <div
+            id="market-quick-add-buttons"
+            class="flex flex-wrap gap-2 mb-4"
+          ></div>
+          <div class="hidden md:grid grid-cols-12 gap-4 mb-2 px-3">
+            <h3 class="col-span-4 font-semibold text-main-primary">
+              Sportsbook
+            </h3>
+            <h3
+              id="market-odds-header"
+              class="col-span-3 font-semibold text-main-primary text-center"
+            >
+              Odds (A / B)
+            </h3>
+            <h3 class="col-span-4 font-semibold text-main-primary text-center">
+              Weight
+            </h3>
+            <div class="col-span-1"></div>
+          </div>
+          <div id="market-sportsbook-rows" class="space-y-4"></div>
+          <div class="mt-4">
+            <button id="add-market-book-btn" class="btn btn-secondary w-full">
+              Add Custom Market Book
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap gap-4 mt-8">
+          <button id="calculate-btn" class="btn btn-primary flex-grow">
+            Calculate All Consensus
+          </button>
+          <button id="reset-btn" class="btn btn-danger flex-grow">
+            Reset All
+          </button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-container" class="mt-8 hidden space-y-8">
+          <!-- Sharp Consensus -->
+          <div>
+            <h2 class="text-2xl font-bold text-main-primary text-center mb-4">
+              Sharp Consensus
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="result-card text-center">
+                <h3
+                  id="result-title-sharp-a"
+                  class="text-xl font-semibold text-accent-red mb-3"
+                >
+                  Side A
+                </h3>
+                <p
+                  class="text-4xl font-bold text-main-primary"
+                  id="true-odds-sharp-a"
+                ></p>
+                <p class="text-lg text-main-secondary mt-2">
+                  True Probability:
+                  <span
+                    class="font-semibold text-main-primary"
+                    id="true-prob-sharp-a"
+                  ></span>
+                </p>
+              </div>
+              <div class="result-card text-center">
+                <h3
+                  id="result-title-sharp-b"
+                  class="text-xl font-semibold text-accent-blue mb-3"
+                >
+                  Side B
+                </h3>
+                <p
+                  class="text-4xl font-bold text-main-primary"
+                  id="true-odds-sharp-b"
+                ></p>
+                <p class="text-lg text-main-secondary mt-2">
+                  True Probability:
+                  <span
+                    class="font-semibold text-main-primary"
+                    id="true-prob-sharp-b"
+                  ></span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Market Consensus -->
+          <div>
+            <div class="text-center mb-4">
+              <h2 class="text-2xl font-bold text-main-primary">
+                Market Consensus
+              </h2>
+              <div
+                class="flex items-center justify-center mt-2 space-x-2 text-main-secondary"
+              >
+                <span>Simple Average</span>
+                <label
+                  for="market-weight-toggle"
+                  class="relative inline-flex items-center cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    id="market-weight-toggle"
+                    class="sr-only peer"
+                  />
+                  <div
+                    class="w-11 h-6 bg-tertiary rounded-full peer peer-focus:ring-4 peer-focus:ring-red-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"
+                  ></div>
+                </label>
+                <span>Use Custom Weights</span>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="result-card text-center">
+                <h3
+                  id="result-title-market-a"
+                  class="text-xl font-semibold text-accent-red mb-3"
+                >
+                  Side A
+                </h3>
+                <p
+                  class="text-4xl font-bold text-main-primary"
+                  id="true-odds-market-a"
+                ></p>
+                <p class="text-lg text-main-secondary mt-2">
+                  True Probability:
+                  <span
+                    class="font-semibold text-main-primary"
+                    id="true-prob-market-a"
+                  ></span>
+                </p>
+              </div>
+              <div class="result-card text-center">
+                <h3
+                  id="result-title-market-b"
+                  class="text-xl font-semibold text-accent-blue mb-3"
+                >
+                  Side B
+                </h3>
+                <p
+                  class="text-4xl font-bold text-main-primary"
+                  id="true-odds-market-b"
+                ></p>
+                <p class="text-lg text-main-secondary mt-2">
+                  True Probability:
+                  <span
+                    class="font-semibold text-main-primary"
+                    id="true-prob-market-b"
+                  ></span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kelly Criterion Calculator -->
+        <div id="kelly-container" class="mt-8 hidden">
+          <div class="result-card">
+            <h2 class="text-2xl font-bold text-main-primary text-center mb-6">
+              Kelly Criterion Bet Sizing
+            </h2>
+            <p class="text-center text-main-secondary -mt-4 mb-6">
+              Uses the
+              <span class="font-bold text-accent-red">Sharp Consensus</span>
+              probability for calculation.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+              <div class="input-group">
+                <label
+                  for="bankroll"
+                  class="block text-sm font-medium mb-1 text-main-secondary"
+                  >Bankroll ($)</label
+                >
+                <input type="number" id="bankroll" value="1000" />
+              </div>
+              <div class="input-group">
+                <label
+                  id="kelly-odds-label-a"
+                  for="market-odds-a"
+                  class="block text-sm font-medium mb-1 text-main-secondary"
+                  >Your Odds (A)</label
+                >
+                <input type="number" id="market-odds-a" placeholder="-110" />
+              </div>
+              <div class="input-group">
+                <label
+                  id="kelly-odds-label-b"
+                  for="market-odds-b"
+                  class="block text-sm font-medium mb-1 text-main-secondary"
+                  >Your Odds (B)</label
+                >
+                <input type="number" id="market-odds-b" placeholder="-110" />
+              </div>
+              <div class="input-group">
+                <label
+                  for="kelly-multiplier"
+                  class="block text-sm font-medium mb-1 text-main-secondary"
+                  >Kelly Multiplier</label
+                >
+                <input
+                  type="number"
+                  id="kelly-multiplier"
+                  value="0.5"
+                  step="0.01"
+                  placeholder="e.g., 0.5"
+                />
+              </div>
+            </div>
+            <div class="mt-6 text-center">
+              <button id="calculate-kelly-btn" class="btn btn-primary">
+                Calculate Bet Size
+              </button>
+            </div>
+            <div id="kelly-results" class="mt-6 text-center hidden">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-tertiary p-4 rounded-lg space-y-1">
+                  <h4
+                    id="kelly-title-a"
+                    class="text-lg font-semibold text-accent-red"
+                  >
+                    Side A Bet
+                  </h4>
+                  <p id="kelly-edge-a" class="text-green-400 font-semibold"></p>
+                  <p
+                    id="kelly-bet-a"
+                    class="text-2xl font-bold text-main-primary"
+                  ></p>
+                  <p id="kelly-fraction-a" class="text-main-secondary"></p>
+                </div>
+                <div class="bg-tertiary p-4 rounded-lg space-y-1">
+                  <h4
+                    id="kelly-title-b"
+                    class="text-lg font-semibold text-accent-blue"
+                  >
+                    Side B Bet
+                  </h4>
+                  <p id="kelly-edge-b" class="text-green-400 font-semibold"></p>
+                  <p
+                    id="kelly-bet-b"
+                    class="text-2xl font-bold text-main-primary"
+                  ></p>
+                  <p id="kelly-fraction-b" class="text-main-secondary"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div
+          id="error-message"
+          class="mt-4 text-center text-red-500 font-semibold hidden"
+        ></div>
+      </div>
+    </div>
+
+    <!-- Template for a sportsbook row -->
+    <template id="sportsbook-row-template">
+      <div
+        class="sportsbook-row grid grid-cols-1 md:grid-cols-12 gap-4 items-center p-3 rounded-lg"
+      >
+        <div class="col-span-1 md:col-span-4 input-group">
+          <label class="md:hidden text-sm font-medium mb-1 text-main-secondary"
+            >Sportsbook</label
+          >
+          <input
+            type="text"
+            class="sportsbook-name flex-grow"
+            placeholder="e.g., Pinnacle"
+          />
+        </div>
+        <div class="col-span-1 md:col-span-3 input-group">
+          <label
+            class="odds-pair-label md:hidden text-sm font-medium mb-1 text-main-secondary"
+            >Odds (A / B)</label
+          >
+          <input type="text" class="odds-pair" placeholder="-110 / -110" />
+        </div>
+        <div
+          class="col-span-1 md:col-span-4 input-group flex items-center space-x-2"
+        >
+          <label class="md:hidden text-sm font-medium mb-1 text-main-secondary"
+            >Weight</label
+          >
+          <input
+            type="number"
+            class="weight flex-grow"
+            value="1"
+            placeholder="e.g., 2"
+          />
+          <span
+            class="weight-percentage text-sm text-main-secondary font-mono w-16 text-right pr-2"
+            >--%</span
+          >
+        </div>
+        <div class="col-span-1 md:col-span-1 flex justify-end">
+          <button
+            class="remove-row-btn btn btn-danger p-2 h-10 w-10 flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </template>
+
+    <!-- Datalists for Autocomplete -->
+    <datalist id="sharp-books-list"></datalist>
+    <datalist id="market-books-list"></datalist>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // --- Element Selectors ---
+        const teamNameAInput = document.getElementById("team-name-a");
+        const teamNameBInput = document.getElementById("team-name-b");
+        const sharpRowsContainer = document.getElementById(
+          "sharp-sportsbook-rows"
+        );
+        const marketRowsContainer = document.getElementById(
+          "market-sportsbook-rows"
+        );
+        const addSharpBtn = document.getElementById("add-sharp-book-btn");
+        const addMarketBtn = document.getElementById("add-market-book-btn");
+        const calculateBtn = document.getElementById("calculate-btn");
+        const resetBtn = document.getElementById("reset-btn");
+        const resultsContainer = document.getElementById("results-container");
+        const errorMessage = document.getElementById("error-message");
+        const rowTemplate = document.getElementById("sportsbook-row-template");
+        const kellyContainer = document.getElementById("kelly-container");
+        const calculateKellyBtn = document.getElementById(
+          "calculate-kelly-btn"
+        );
+        const kellyResults = document.getElementById("kelly-results");
+        const marketWeightToggle = document.getElementById(
+          "market-weight-toggle"
+        );
+        const sharpQuickAddContainer = document.getElementById(
+          "sharp-quick-add-buttons"
+        );
+        const marketQuickAddContainer = document.getElementById(
+          "market-quick-add-buttons"
+        );
+        const sharpDatalist = document.getElementById("sharp-books-list");
+        const marketDatalist = document.getElementById("market-books-list");
+        const sharpOddsHeader = document.getElementById("sharp-odds-header");
+        const marketOddsHeader = document.getElementById("market-odds-header");
+        const modeSidesBtn = document.getElementById("mode-sides");
+        const modeTotalsBtn = document.getElementById("mode-totals");
+        const sidesInputs = document.getElementById("sides-inputs");
+        const totalsInputs = document.getElementById("totals-inputs");
+        const gameTotalInput = document.getElementById("game-total");
+        const themeToggle = document.getElementById("theme-toggle");
+        const sunIcon = document.getElementById("theme-icon-sun");
+        const moonIcon = document.getElementById("theme-icon-moon");
+
+        // --- Book Definitions ---
+        const sharpBooks = [
+          { name: "Pinnacle", weight: 2.5 },
+          { name: "ProphetX", weight: 2.5 },
+          { name: "Sporttrade", weight: 2.5 },
+          { name: "Kalshi", weight: 2.5 },
+          { name: "Circa Sports", weight: 2.0 },
+          { name: "Novig", weight: 1.5 },
+        ];
+        const marketBooks = [
+          { name: "DraftKings", weight: 1 },
+          { name: "Bet365", weight: 1 },
+          { name: "ESPNBet", weight: 1 },
+          { name: "BetMGM", weight: 1 },
+          { name: "Fanatics", weight: 1 },
+          { name: "HardRock", weight: 1 },
+          { name: "BallyBet", weight: 1 },
+          { name: "BetRivers", weight: 1 },
+          { name: "Fliff", weight: 1 },
+        ];
+
+        // --- State Variables ---
+        let currentTrueProbSharpA = 0;
+        let currentTrueProbSharpB = 0;
+        let currentMode = "sides"; // 'sides' or 'totals'
+
+        // --- Helper Functions ---
+        const americanToImplied = (odds) => {
+          if (odds >= 100) return 100 / (odds + 100);
+          if (odds < 100) return Math.abs(odds) / (Math.abs(odds) + 100);
+          return 0;
+        };
+        const probToAmerican = (prob) => {
+          if (prob >= 0.5) return -((prob / (1 - prob)) * 100);
+          return ((1 - prob) / prob) * 100;
+        };
+        const americanToDecimal = (odds) => {
+          if (odds >= 100) return odds / 100 + 1;
+          return 100 / Math.abs(odds) + 1;
+        };
+        const showError = (message) => {
+          errorMessage.innerHTML = message;
+          errorMessage.classList.remove("hidden");
+          resultsContainer.classList.add("hidden");
+          kellyContainer.classList.add("hidden");
+        };
+        const hideError = () => errorMessage.classList.add("hidden");
+
+        // --- UI Setup ---
+        const populateDatalists = () => {
+          sharpBooks.forEach((book) => {
+            const option = document.createElement("option");
+            option.value = book.name;
+            sharpDatalist.appendChild(option);
+          });
+          marketBooks.forEach((book) => {
+            const option = document.createElement("option");
+            option.value = book.name;
+            marketDatalist.appendChild(option);
+          });
+        };
+
+        const createQuickAddButtons = () => {
+          sharpBooks.forEach((book) => {
+            const button = document.createElement("button");
+            button.className = "btn-quick-add";
+            const text = document.createElement("span");
+            text.textContent = book.name;
+            button.appendChild(text);
+            button.addEventListener("click", () => {
+              addRow(sharpRowsContainer, book.name, "", book.weight);
+            });
+            sharpQuickAddContainer.appendChild(button);
+          });
+          marketBooks.forEach((book) => {
+            const button = document.createElement("button");
+            button.className = "btn-quick-add";
+            const text = document.createElement("span");
+            text.textContent = book.name;
+            button.appendChild(text);
+            button.addEventListener("click", () => {
+              addRow(marketRowsContainer, book.name, "", book.weight);
+            });
+            marketQuickAddContainer.appendChild(button);
+          });
+        };
+
+        const updateWeightPercentages = (container) => {
+          const rows = container.querySelectorAll(".sportsbook-row");
+          let totalWeight = 0;
+          rows.forEach((row) => {
+            const weight = parseFloat(row.querySelector(".weight").value);
+            if (!isNaN(weight) && weight > 0) totalWeight += weight;
+          });
+          rows.forEach((row) => {
+            const weight = parseFloat(row.querySelector(".weight").value);
+            const percentageEl = row.querySelector(".weight-percentage");
+            if (!isNaN(weight) && weight > 0 && totalWeight > 0) {
+              percentageEl.textContent = `${(
+                (weight / totalWeight) *
+                100
+              ).toFixed(1)}%`;
+            } else {
+              percentageEl.textContent = "--%";
+            }
+          });
+        };
+
+        const updateHeaders = () => {
+          let sideAName, sideBName;
+          if (currentMode === "sides") {
+            sideAName = teamNameAInput.value.trim() || "A";
+            sideBName = teamNameBInput.value.trim() || "B";
+          } else {
+            sideAName = "Over";
+            sideBName = "Under";
+          }
+          const headerText = `Odds (${sideAName} / ${sideBName})`;
+
+          sharpOddsHeader.textContent = headerText;
+          marketOddsHeader.textContent = headerText;
+
+          document.querySelectorAll(".odds-pair-label").forEach((label) => {
+            label.textContent = headerText;
+          });
+        };
+
+        // --- Core Logic ---
+        const addRow = (
+          container,
+          bookName = "",
+          oddsPair = "",
+          weight = 1
+        ) => {
+          const newRow = rowTemplate.content.cloneNode(true);
+          const nameInput = newRow.querySelector(".sportsbook-name");
+          nameInput.value = bookName;
+          if (container === sharpRowsContainer) {
+            nameInput.setAttribute("list", "sharp-books-list");
+          } else {
+            nameInput.setAttribute("list", "market-books-list");
+          }
+          container.appendChild(newRow);
+          const addedRow = container.lastElementChild;
+          addedRow.querySelector(".odds-pair").value = oddsPair;
+          addedRow.querySelector(".weight").value = weight;
+          addedRow
+            .querySelector(".remove-row-btn")
+            .addEventListener("click", () => {
+              addedRow.remove();
+              updateWeightPercentages(sharpRowsContainer);
+              updateWeightPercentages(marketRowsContainer);
+            });
+          updateWeightPercentages(container);
+          updateHeaders();
+        };
+
+        const calculateConsensus = () => {
+          hideError();
+          const processGroup = (container, isWeighted) => {
+            const rows = container.querySelectorAll(".sportsbook-row");
+            let totalWeight = 0,
+              weightedSumA = 0,
+              weightedSumB = 0;
+            let unweightedSumA = 0,
+              unweightedSumB = 0;
+            let bookCount = 0;
+            let errors = [];
+            let allOdds = [];
+
+            rows.forEach((row) => {
+              const bookName =
+                row.querySelector(".sportsbook-name").value || "Unnamed Book";
+              const oddsPairText = row.querySelector(".odds-pair").value;
+              if (oddsPairText.trim() === "") return;
+              const oddsParts = oddsPairText.split(/[\s,\/]+/);
+              if (oddsParts.length < 2) {
+                errors.push(
+                  `Error in '${bookName}': Invalid odds format. Please enter two numbers.`
+                );
+                return;
+              }
+              const oddsA = parseFloat(oddsParts[0]);
+              const oddsB = parseFloat(oddsParts[1]);
+              const weight = parseFloat(row.querySelector(".weight").value);
+              if (
+                isNaN(oddsA) ||
+                isNaN(oddsB) ||
+                isNaN(weight) ||
+                weight <= 0
+              ) {
+                errors.push(
+                  `Error in '${bookName}': Odds or weight contain invalid characters.`
+                );
+                return;
+              }
+              const impliedA = americanToImplied(oddsA);
+              const impliedB = americanToImplied(oddsB);
+              if (impliedA + impliedB <= 1) {
+                errors.push(
+                  `Error in '${bookName}': Odds have no vig. Check your numbers.`
+                );
+                return;
+              }
+              allOdds.push({ name: bookName, oddsA, oddsB, row });
+              bookCount++;
+              weightedSumA += impliedA * weight;
+              weightedSumB += impliedB * weight;
+              totalWeight += weight;
+              unweightedSumA += impliedA;
+              unweightedSumB += impliedB;
+            });
+
+            if (errors.length > 0) return { error: true, messages: errors };
+            if (bookCount === 0)
+              return {
+                error: true,
+                messages: ["No books with valid odds in group"],
+              };
+
+            let avgImpliedA, avgImpliedB;
+            if (isWeighted) {
+              avgImpliedA = weightedSumA / totalWeight;
+              avgImpliedB = weightedSumB / totalWeight;
+            } else {
+              avgImpliedA = unweightedSumA / bookCount;
+              avgImpliedB = unweightedSumB / bookCount;
+            }
+            const totalMarketProb = avgImpliedA + avgImpliedB;
+            const trueProbA = avgImpliedA / totalMarketProb;
+            const trueProbB = avgImpliedB / totalMarketProb;
+            const trueOddsA = probToAmerican(trueProbA);
+            const trueOddsB = probToAmerican(trueProbB);
+            const vigOddsA = probToAmerican(avgImpliedA);
+            const vigOddsB = probToAmerican(avgImpliedB);
+
+            return {
+              trueOddsA,
+              trueProbA,
+              trueOddsB,
+              trueProbB,
+              allOdds,
+              vigOddsA,
+              vigOddsB,
+            };
+          };
+
+          const sharpResult = processGroup(sharpRowsContainer, true);
+          if (sharpResult.error) {
+            showError(
+              `<strong>Sharp Books Errors:</strong><br>${sharpResult.messages.join(
+                "<br>"
+              )}`
+            );
+            return;
+          }
+          currentTrueProbSharpA = sharpResult.trueProbA;
+          currentTrueProbSharpB = sharpResult.trueProbB;
+          document.getElementById("true-odds-sharp-a").textContent =
+            sharpResult.trueOddsA > 0
+              ? `+${sharpResult.trueOddsA.toFixed(2)}`
+              : sharpResult.trueOddsA.toFixed(2);
+          document.getElementById("true-prob-sharp-a").textContent = `${(
+            sharpResult.trueProbA * 100
+          ).toFixed(4)}%`;
+          document.getElementById("true-odds-sharp-b").textContent =
+            sharpResult.trueOddsB > 0
+              ? `+${sharpResult.trueOddsB.toFixed(2)}`
+              : sharpResult.trueOddsB.toFixed(2);
+          document.getElementById("true-prob-sharp-b").textContent = `${(
+            sharpResult.trueProbB * 100
+          ).toFixed(4)}%`;
+
+          const marketResult = processGroup(
+            marketRowsContainer,
+            marketWeightToggle.checked
+          );
+          if (
+            marketResult.error &&
+            marketResult.messages[0] !== "No books with valid odds in group"
+          ) {
+            showError(
+              `<strong>Market Books Errors:</strong><br>${marketResult.messages.join(
+                "<br>"
+              )}`
+            );
+            return;
+          }
+
+          const kellyOddsAInput = document.getElementById("market-odds-a");
+          const kellyOddsBInput = document.getElementById("market-odds-b");
+
+          if (marketResult.trueOddsA) {
+            document.getElementById("true-odds-market-a").textContent =
+              marketResult.trueOddsA > 0
+                ? `+${marketResult.trueOddsA.toFixed(2)}`
+                : marketResult.trueOddsA.toFixed(2);
+            document.getElementById("true-prob-market-a").textContent = `${(
+              marketResult.trueProbA * 100
+            ).toFixed(4)}%`;
+
+            document.getElementById("true-odds-market-b").textContent =
+              marketResult.trueOddsB > 0
+                ? `+${marketResult.trueOddsB.toFixed(2)}`
+                : marketResult.trueOddsB.toFixed(2);
+            document.getElementById("true-prob-market-b").textContent = `${(
+              marketResult.trueProbB * 100
+            ).toFixed(4)}%`;
+
+            kellyOddsAInput.value = marketResult.trueOddsA.toFixed(2);
+            kellyOddsBInput.value = marketResult.trueOddsB.toFixed(2);
+          } else {
+            document.getElementById("true-odds-market-a").textContent = "N/A";
+            document.getElementById("true-prob-market-a").textContent = "N/A";
+            document.getElementById("true-odds-market-b").textContent = "N/A";
+            document.getElementById("true-prob-market-b").textContent = "N/A";
+          }
+
+          const edgeA =
+            americanToDecimal(parseFloat(kellyOddsAInput.value)) *
+              currentTrueProbSharpA -
+            1;
+          const edgeB =
+            americanToDecimal(parseFloat(kellyOddsBInput.value)) *
+              currentTrueProbSharpB -
+            1;
+          kellyOddsAInput.classList.toggle("has-positive-ev", edgeA > 0);
+          kellyOddsBInput.classList.toggle("has-positive-ev", edgeB > 0);
+
+          let sideAName, sideBName;
+          if (currentMode === "sides") {
+            sideAName = teamNameAInput.value.trim() || "Side A";
+            sideBName = teamNameBInput.value.trim() || "Side B";
+          } else {
+            sideAName = `Over ${gameTotalInput.value}`;
+            sideBName = `Under ${gameTotalInput.value}`;
+          }
+
+          document.getElementById("result-title-sharp-a").textContent =
+            sideAName;
+          document.getElementById("result-title-sharp-b").textContent =
+            sideBName;
+          document.getElementById("result-title-market-a").textContent =
+            sideAName;
+          document.getElementById("result-title-market-b").textContent =
+            sideBName;
+          document.querySelector(
+            "label[for='market-odds-a']"
+          ).textContent = `Market True Odds (${sideAName})`;
+          document.querySelector(
+            "label[for='market-odds-b']"
+          ).textContent = `Market True Odds (${sideBName})`;
+          document.getElementById(
+            "kelly-title-a"
+          ).textContent = `${sideAName} Bet`;
+          document.getElementById(
+            "kelly-title-b"
+          ).textContent = `${sideBName} Bet`;
+
+          resultsContainer.classList.remove("hidden");
+          kellyContainer.classList.remove("hidden");
+          kellyResults.classList.add("hidden");
+        };
+
+        const calculateKelly = () => {
+          hideError();
+          const bankroll = parseFloat(
+            document.getElementById("bankroll").value
+          );
+          const marketOddsA = parseFloat(
+            document.getElementById("market-odds-a").value
+          );
+          const marketOddsB = parseFloat(
+            document.getElementById("market-odds-b").value
+          );
+          const kellyMultiplier = parseFloat(
+            document.getElementById("kelly-multiplier").value
+          );
+          if (
+            isNaN(bankroll) ||
+            bankroll <= 0 ||
+            isNaN(marketOddsA) ||
+            isNaN(marketOddsB) ||
+            isNaN(kellyMultiplier) ||
+            kellyMultiplier < 0
+          ) {
+            showError(
+              "Please enter a valid bankroll, market odds, and a non-negative Kelly multiplier."
+            );
+            return;
+          }
+          const decimalOddsA = americanToDecimal(marketOddsA);
+          const edgeA = decimalOddsA * currentTrueProbSharpA - 1;
+          const fullFractionA = edgeA > 0 ? edgeA / (decimalOddsA - 1) : 0;
+          const finalFractionA = fullFractionA * kellyMultiplier;
+          const betSizeA = bankroll * finalFractionA;
+          const decimalOddsB = americanToDecimal(marketOddsB);
+          const edgeB = decimalOddsB * currentTrueProbSharpB - 1;
+          const fullFractionB = edgeB > 0 ? edgeB / (decimalOddsB - 1) : 0;
+          const finalFractionB = fullFractionB * kellyMultiplier;
+          const betSizeB = bankroll * finalFractionB;
+          const kellyEdgeAEl = document.getElementById("kelly-edge-a");
+          const kellyBetAEl = document.getElementById("kelly-bet-a");
+          const kellyFractionAEl = document.getElementById("kelly-fraction-a");
+          if (betSizeA > 0) {
+            kellyEdgeAEl.textContent = `Edge: ${(edgeA * 100).toFixed(2)}%`;
+            kellyBetAEl.textContent = `$${betSizeA.toFixed(2)}`;
+            kellyFractionAEl.textContent = `(${(finalFractionA * 100).toFixed(
+              2
+            )}% of bankroll)`;
+          } else {
+            kellyEdgeAEl.textContent = `Edge: ${(edgeA * 100).toFixed(2)}%`;
+            kellyBetAEl.textContent = "No Edge";
+            kellyFractionAEl.textContent = "Do Not Bet";
+          }
+          const kellyEdgeBEl = document.getElementById("kelly-edge-b");
+          const kellyBetBEl = document.getElementById("kelly-bet-b");
+          const kellyFractionBEl = document.getElementById("kelly-fraction-b");
+          if (betSizeB > 0) {
+            kellyEdgeBEl.textContent = `Edge: ${(edgeB * 100).toFixed(2)}%`;
+            kellyBetBEl.textContent = `$${betSizeB.toFixed(2)}`;
+            kellyFractionBEl.textContent = `(${(finalFractionB * 100).toFixed(
+              2
+            )}% of bankroll)`;
+          } else {
+            kellyEdgeBEl.textContent = `Edge: ${(edgeB * 100).toFixed(2)}%`;
+            kellyBetBEl.textContent = "No Edge";
+            kellyFractionBEl.textContent = "Do Not Bet";
+          }
+          kellyResults.classList.remove("hidden");
+        };
+
+        const resetCalculator = () => {
+          document.getElementById("team-name-a").value = "";
+          document.getElementById("team-name-b").value = "";
+          document.getElementById("game-description").value = "";
+          document.getElementById("game-total").value = "";
+          document.getElementById("bankroll").value = "1000";
+          document.getElementById("market-odds-a").value = "";
+          document.getElementById("market-odds-b").value = "";
+          document.getElementById("kelly-multiplier").value = "0.5";
+          marketWeightToggle.checked = false;
+          sharpRowsContainer.innerHTML = "";
+          marketRowsContainer.innerHTML = "";
+          resultsContainer.classList.add("hidden");
+          kellyContainer.classList.add("hidden");
+          hideError();
+          addRow(sharpRowsContainer, "Pinnacle", "", 2.5);
+          addRow(marketRowsContainer, "DraftKings", "", 1);
+          updateHeaders();
+        };
+
+        const setMode = (mode) => {
+          currentMode = mode;
+          if (mode === "sides") {
+            modeSidesBtn.classList.replace("btn-secondary", "btn-primary");
+            modeTotalsBtn.classList.replace("btn-primary", "btn-secondary");
+            sidesInputs.classList.remove("hidden");
+            totalsInputs.classList.add("hidden");
+          } else {
+            modeTotalsBtn.classList.replace("btn-secondary", "btn-primary");
+            modeSidesBtn.classList.replace("btn-primary", "btn-secondary");
+            totalsInputs.classList.remove("hidden");
+            sidesInputs.classList.add("hidden");
+          }
+          updateHeaders();
+        };
+
+        const applyTheme = (theme) => {
+          document.documentElement.setAttribute("data-theme", theme);
+          if (theme === "dark") {
+            sunIcon.classList.add("hidden");
+            moonIcon.classList.remove("hidden");
+          } else {
+            moonIcon.classList.add("hidden");
+            sunIcon.classList.remove("hidden");
+          }
+          localStorage.setItem("theme", theme);
+        };
+
+        // --- Event Listeners ---
+        addSharpBtn.addEventListener("click", () => addRow(sharpRowsContainer));
+        addMarketBtn.addEventListener("click", () =>
+          addRow(marketRowsContainer)
+        );
+        calculateBtn.addEventListener("click", calculateConsensus);
+        resetBtn.addEventListener("click", resetCalculator);
+        calculateKellyBtn.addEventListener("click", calculateKelly);
+        sharpRowsContainer.addEventListener("input", (e) => {
+          if (e.target.classList.contains("weight"))
+            updateWeightPercentages(sharpRowsContainer);
+        });
+        marketRowsContainer.addEventListener("input", (e) => {
+          if (e.target.classList.contains("weight"))
+            updateWeightPercentages(marketRowsContainer);
+        });
+        marketWeightToggle.addEventListener("change", () => {
+          if (!resultsContainer.classList.contains("hidden"))
+            calculateConsensus();
+        });
+        teamNameAInput.addEventListener("input", updateHeaders);
+        teamNameBInput.addEventListener("input", updateHeaders);
+        gameTotalInput.addEventListener("input", updateHeaders);
+        modeSidesBtn.addEventListener("click", () => setMode("sides"));
+        modeTotalsBtn.addEventListener("click", () => setMode("totals"));
+        if (themeToggle) {
+          themeToggle.addEventListener("click", () => {
+            const newTheme =
+              document.documentElement.getAttribute("data-theme") === "dark"
+                ? "light"
+                : "dark";
+            applyTheme(newTheme);
+          });
+        }
+
+        // --- Initial State ---
+        const savedTheme = localStorage.getItem("theme") || "dark";
+        applyTheme(savedTheme);
+        populateDatalists();
+        createQuickAddButtons();
+        addRow(sharpRowsContainer, "Pinnacle", "", 2.5);
+        addRow(marketRowsContainer, "DraftKings", "", 1);
+        updateHeaders();
+      });
+    </script>
+  </body>
+</html>

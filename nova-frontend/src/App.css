@@ -1,0 +1,1496 @@
+/* src/App.css */
+
+:root[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f4f4f5;
+  --bg-tertiary: #e4e4e7;
+  --text-primary: #000000;
+  --text-secondary: #3f3f46;
+  --border-primary: #d4d4d8;
+  --accent-red: #dc2626;
+  --accent-blue: #2563eb;
+  --accent-green: #16a34a; /* ADD THIS LINE */
+}
+
+:root[data-theme="dark"] {
+  --bg-primary: #000000;
+  --bg-secondary: #18181b;
+  --bg-tertiary: #27272a;
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --border-primary: #3f3f46;
+  --accent-red: #ef4444;
+  --accent-blue: #3b82f6;
+  --accent-green: #4ade80; /* ADD THIS LINE */
+}
+/* The rest of your file stays the same */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.app-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-primary);
+  padding-bottom: 1rem;
+}
+
+.app-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.app-header nav button {
+  padding: 0.5rem 1rem;
+  border: 1px solid transparent;
+  background-color: transparent;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.app-header nav button:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.app-header nav button.active {
+  background-color: var(--accent-primary);
+  color: var(--bg-primary);
+}
+
+.game-card,
+.ev-bet-card,
+.cross-market-card,
+.system-pick-card,
+.view-container {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+}
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background-color: #f0f2f5;
+  color: #1a202c;
+  margin: 0;
+}
+
+.app-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 1rem;
+}
+
+.app-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.app-header nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.app-header nav button {
+  padding: 0.5rem 1rem;
+  border: 1px solid transparent;
+  background-color: transparent;
+  font-weight: 600;
+  color: #4a5568;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.app-header nav button:hover {
+  background-color: #e2e8f0;
+}
+
+.app-header nav button.active {
+  background-color: #2c5282;
+  color: #ffffff;
+}
+
+.filters {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filters label {
+  font-weight: 600;
+}
+
+.filters select {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.status-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  padding: 4rem;
+}
+.status-message.error {
+  color: #e53e3e;
+}
+
+.game-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+
+.game-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s ease-in-out;
+}
+.game-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.game-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #718096;
+}
+
+.team {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.team-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+.team-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.no-bet-recommendation {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #edf2f7;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #a0aec0;
+  font-style: italic;
+}
+
+.recommendation {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #edf2f7;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.rec-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+.rec-details {
+  flex-grow: 1;
+}
+.rec-bet-name {
+  font-weight: 700;
+  color: #2c5282;
+}
+.rec-edge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #38a169;
+  background-color: rgba(56, 161, 105, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-top: 2px;
+}
+.rec-stake {
+  text-align: center;
+  background-color: #f7fafc;
+  border-radius: 6px;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+}
+.stake-percent {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a202c;
+}
+.stake-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #718096;
+  font-weight: 600;
+}
+.view-container {
+  padding: 2rem;
+  text-align: center;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+/* Add these to the end of src/App.css */
+.view-container h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.ev-bets-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.ev-bet-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.ev-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1rem;
+}
+
+.ev-card-odds-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: right;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+
+.ev-card-book-logo {
+  height: 40px;
+  width: 40px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.ev-card-body {
+  background-color: #f7fafc;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ev-badge {
+  background-color: rgba(56, 161, 105, 0.1);
+  color: #38a169;
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 4px 8px;
+  border-radius: 9999px;
+}
+
+.text-accent-blue {
+  color: #2c5282;
+}
+.font-bold {
+  font-weight: 700;
+}
+.text-lg {
+  font-size: 1.125rem;
+}
+.text-main-primary {
+  color: #1a202c;
+}
+.text-sm {
+  font-size: 0.875rem;
+}
+.text-main-secondary {
+  color: #718096;
+}
+
+.cross-market-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.cross-market-card {
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  padding: 1rem;
+}
+
+.cm-bet-description {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1a202c;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.cm-leg {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cm-leg + .cm-leg {
+  margin-top: 0.5rem;
+}
+
+.cm-leg-label {
+  font-size: 0.8rem;
+  color: #718096;
+}
+
+.cm-book-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cm-book-logo {
+  height: 24px;
+  width: 24px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.cm-odds {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.cm-arb-value {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+  text-align: center;
+  font-weight: 700;
+  color: #38a169;
+}
+
+/* Add these to the end of src/App.css */
+.system-picks-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 1rem;
+}
+
+.system-pick-card {
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  font-size: 0.9rem;
+}
+
+.sp-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background-color: #f7fafc;
+  color: #718096;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.sp-body {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.sp-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.sp-details {
+  flex-grow: 1;
+}
+
+.sp-teams {
+  font-size: 0.8rem;
+  color: #718096;
+}
+
+.sp-bet-name {
+  font-weight: 700;
+  color: #2c5282;
+  font-size: 1rem;
+}
+
+.sp-odds-box {
+  text-align: center;
+  border-left: 1px solid #e2e8f0;
+  padding-left: 1rem;
+}
+
+.sp-odds {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.sp-bookmaker {
+  font-size: 0.75rem;
+  color: #718096;
+}
+
+.sp-footer {
+  padding: 0.5rem 1rem;
+  border-top: 1px solid #e2e8f0;
+  background-color: #f7fafc;
+  color: #38a169;
+  font-weight: 700;
+  text-align: right;
+  font-size: 0.8rem;
+}
+
+/* Add these to the end of src/App.css */
+.game-list-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1rem;
+}
+.game-list-card {
+  background-color: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.game-list-card:hover {
+  border-color: #2c5282;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.glc-teams {
+  display: flex;
+  justify-content: space-between;
+}
+.glc-team-item {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1rem;
+}
+.glc-team-item + .glc-team-item {
+  margin-top: 0.5rem;
+}
+.glc-logo {
+  height: 24px;
+  width: 24px;
+  margin-right: 0.75rem;
+  object-fit: contain;
+}
+.glc-info {
+  text-align: right;
+  font-size: 0.75rem;
+  color: #718096;
+}
+
+.odds-screen-detail h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.back-button {
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #4a5568;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.market-selector {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.market-selector button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e2e8f0;
+  background-color: #fff;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.market-selector button.active {
+  background-color: #2c5282;
+  color: #fff;
+  border-color: #2c5282;
+}
+.odds-table {
+  border-spacing: 0;
+}
+.odds-table th {
+  padding: 0.75rem;
+  background-color: #f7fafc;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.8rem;
+  color: #4a5568;
+}
+.odds-table th.sortable-header {
+  cursor: pointer;
+}
+.odds-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #edf2f7;
+  text-align: center;
+  font-weight: 600;
+}
+.odds-table td:first-child {
+  text-align: left;
+}
+.book-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.book-logo {
+  height: 28px;
+  width: 28px;
+  object-fit: contain;
+}
+/* Add these to the end of src/App.css */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem; /* Add some padding for smaller screens */
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 1.5rem 2rem;
+  border-radius: 8px;
+  width: 100%; /* Make it responsive */
+  max-width: 900px; /* Increase the max-width */
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.modal-subtitle {
+  font-size: 0.9rem;
+  color: #718096;
+  text-transform: capitalize;
+}
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #a0aec0;
+}
+/* Add this to the end of src/App.css */
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Adds space between the summary and the table */
+}
+.game-card {
+  /* Add cursor pointer to all cards */
+  cursor: pointer;
+}
+/* Add these to the end of src/App.css */
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+.filter-group label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #718096;
+  margin-bottom: 0.25rem;
+}
+.filters {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+}
+.global-input input {
+  width: 120px;
+}
+.stake-amount {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a202c;
+}
+/* Add this to the end of src/App.css */
+.ev-filters {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.ev-filters input,
+.ev-filters select {
+  width: 150px;
+}
+
+/* Add these to the end of src/App.css */
+.pill-selector {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 0.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.pill-button {
+  background-color: #edf2f7;
+  color: #4a5568;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.pill-button:hover {
+  background-color: #e2e8f0;
+}
+
+.pill-button.active {
+  background-color: #2c5282;
+  color: #fff;
+}
+/* Add these to the end of src/App.css */
+.tracker-summary {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background-color: #fff;
+  border-radius: 8px;
+}
+.summary-box {
+  text-align: center;
+}
+.summary-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+.summary-label {
+  font-size: 0.8rem;
+  color: #718096;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.add-play-btn {
+  display: block;
+  margin: 0 auto 2rem auto;
+  padding: 0.75rem 1.5rem;
+  background-color: #2c5282;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tracked-plays-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.tracked-play-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 5px solid #a0aec0; /* Default to push/pending */
+}
+.tracked-play-card.status-win {
+  border-left-color: #38a169; /* Green */
+}
+.tracked-play-card.status-loss {
+  border-left-color: #e53e3e; /* Red */
+}
+.play-bet-name {
+  font-weight: 600;
+}
+.play-details {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+.play-status {
+  font-weight: 700;
+  text-transform: capitalize;
+}
+/* Add these to the end of src/App.css */
+.track-button {
+  background-color: #38a169;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background-color 0.2s;
+}
+.track-button:hover {
+  background-color: #2f855a;
+}
+.track-modal-details p {
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+.track-modal-details strong {
+  color: #4a5568;
+}
+.track-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+.modal-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.modal-btn.cancel {
+  background-color: #edf2f7;
+  border: 1px solid #e2e8f0;
+}
+.modal-btn.save {
+  background-color: #2c5282;
+  color: #fff;
+  border: 1px solid #2c5282;
+}
+/* Add these to the end of src/App.css */
+.tracker-summary {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background-color: #fff;
+  border-radius: 8px;
+}
+.summary-box {
+  text-align: center;
+}
+.summary-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+.summary-label {
+  font-size: 0.8rem;
+  color: #718096;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.add-play-btn {
+  display: block;
+  margin: 0 auto 2rem auto;
+  padding: 0.75rem 1.5rem;
+  background-color: #2c5282;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tracked-plays-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.tracked-play-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 5px solid #a0aec0; /* Default to push/pending */
+}
+.tracked-play-card.status-win {
+  border-left-color: #38a169; /* Green */
+}
+.tracked-play-card.status-loss {
+  border-left-color: #e53e3e; /* Red */
+}
+.play-bet-name {
+  font-weight: 600;
+}
+.play-details {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+.play-status {
+  font-weight: 700;
+  text-transform: capitalize;
+}
+/* Add these to the end of src/App.css */
+.consensus-summary {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: #f7fafc;
+}
+.summary-header {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #718096;
+  padding-bottom: 0.5rem;
+}
+.summary-label-cell {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+}
+.summary-prob {
+  font-size: 0.75rem;
+  color: #a0aec0;
+}
+.w-full {
+  width: 100%;
+}
+.text-center {
+  text-align: center;
+}
+.pt-2 {
+  padding-top: 0.5rem;
+}
+/* Find and replace these styles in App.css */
+
+.summary-team-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* Increased gap for more space */
+  font-size: 1.1rem; /* Increased font size */
+}
+.summary-logo {
+  width: 50px; /* Increased logo size */
+  height: 50px; /* Increased logo size */
+  object-fit: contain;
+}
+/* Add this to the end of src/App.css */
+
+.consensus-summary table {
+  table-layout: fixed; /* Ensures columns respect their width */
+}
+
+.consensus-summary th:first-child,
+.consensus-summary td:first-child {
+  width: 40%; /* Make the first column narrower */
+}
+
+.consensus-summary th:not(:first-child),
+.consensus-summary td:not(:first-child) {
+  width: 30%; /* Let the other two columns share the rest */
+}
+
+.summary-label-cell {
+  padding-right: 1rem; /* Add some padding to the right of the team names */
+}
+/* Add this to the end of src/App.css */
+.sharp-indicator {
+  color: #c53030; /* A shade of red */
+  font-weight: 700;
+  font-size: 0.75rem;
+  margin-left: 0.25rem;
+  vertical-align: super; /* Aligns it slightly above the baseline */
+  cursor: help;
+}
+/* Add this to the end of src/App.css */
+.modal-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #4a5568;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2c5282;
+}
+
+input:checked + .slider:before {
+  transform: translateX(14px);
+}
+/* Add to the end of src/App.css */
+.theme-toggle {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 1rem;
+  transition: all 0.2s ease-in-out;
+}
+.theme-toggle:hover {
+  transform: scale(1.1);
+}
+
+/* Add these to the end of src/App.css */
+.analysis-view {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+.kpi-card {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+}
+.kpi-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+.kpi-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.kpi-subtext {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+.breakdown-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.breakdown-table {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+.breakdown-table h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+}
+.breakdown-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.breakdown-table th,
+.breakdown-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-primary);
+}
+.breakdown-table th {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.breakdown-table td {
+  font-weight: 600;
+}
+.breakdown-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.text-green {
+  color: var(--accent-green);
+}
+.text-red {
+  color: var(--accent-red);
+}
+/* Add these to the end of src/App.css */
+.view-picks-btn {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.view-picks-btn:hover {
+  background-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+.picks-modal-body table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.picks-modal-body th,
+.picks-modal-body td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-primary);
+}
+.picks-modal-body th {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.picks-modal-body td {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.status-badge {
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  display: inline-block;
+}
+.status-badge.status-win {
+  background-color: rgba(72, 187, 120, 0.1);
+  color: var(--accent-green);
+}
+.status-badge.status-loss {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--accent-red);
+}
+.status-badge.status-push {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+/* Add these to the end of src/App.css */
+.modal-lg {
+  max-width: 1200px; /* Make this modal wider */
+}
+
+.bet-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.bet-cell-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.book-cell-small {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.book-logo-small {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+/* Add this to the end of src/App.css */
+.picks-modal-body th.sortable-header {
+  cursor: pointer;
+}
+.picks-modal-body th.sortable-header:hover {
+  color: var(--text-primary);
+}
+/* Add these to the end of src/App.css */
+.kpi-title[title] {
+  cursor: help;
+}
+.stat-poor {
+  color: var(--accent-red);
+}
+.stat-good {
+  color: #d97706; /* Amber/Yellow */
+}
+.stat-excellent {
+  color: var(--accent-green);
+}
+
+/* Add these to the end of src/App.css */
+.kpi-title[title] {
+  cursor: help;
+}
+.stat-poor {
+  color: var(--accent-red);
+}
+.stat-good {
+  color: #d97706; /* Amber/Yellow - this stays the same for contrast */
+}
+.stat-excellent {
+  color: var(--accent-green);
+}
+.text-green {
+  color: var(--accent-green);
+}
+.text-red {
+  color: var(--accent-red);
+}
+
+/* Add these to the end of src/App.css */
+.tooltip-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tooltip-icon {
+  cursor: help;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-left: 0.25rem;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  width: 160px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  text-align: left;
+  border-radius: 6px;
+  padding: 0.75rem;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Position above the icon */
+  left: 50%;
+  margin-left: -80px; /* Use half of the width to center */
+  transition: opacity 0.3s;
+  border: 1px solid var(--border-primary);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tooltip-text p {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.8rem;
+}
+.tooltip-text p:last-child {
+  margin-bottom: 0;
+}
+
+.tooltip-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+/* Add these to the end of src/App.css */
+.filter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.reset-btn {
+  background: none;
+  border: none;
+  color: var(--accent-blue);
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: auto;
+  align-self: flex-end;
+  padding: 0.5rem;
+}
+
+/* Add these to the end of src/App.css */
+.chart-container {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem; /* Add some space between chart and KPIs */
+}
+.chart-container h3 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.2rem;
+  text-align: left;
+}
+/* Add these to the end of src/App.css */
+.date-picker-input {
+  /* Re-use existing filter input styles */
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-primary);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  width: 120px; /* Adjust width as needed */
+}
+
+/* Optional: Style the calendar popup to match your theme */
+.react-datepicker-popper {
+  z-index: 10;
+}
+.react-datepicker {
+  font-family: "Inter", sans-serif;
+  border: 1px solid var(--border-primary) !important;
+  background-color: var(--bg-primary) !important;
+}
+.react-datepicker__header {
+  background-color: var(--bg-secondary) !important;
+  border-bottom: 1px solid var(--border-primary) !important;
+}
+.react-datepicker__current-month,
+.react-datepicker__day-name,
+.react-datepicker__day,
+.react-datepicker__navigation-icon {
+  color: var(--text-primary) !important;
+}
+.react-datepicker__day:hover {
+  background-color: var(--bg-tertiary) !important;
+}
+.react-datepicker__day--selected {
+  background-color: var(--accent-red) !important;
+  color: white !important;
+}
+.react-datepicker__day--keyboard-selected {
+  background-color: #f0f0f0;
+}
+.max-edge-badge {
+  font-size: 0.75em;
+  font-weight: 500;
+  margin-left: 8px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+.max-edge-display {
+  font-size: 0.8em; /* INCREASED: Makes the entire line larger */
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.max-edge-display .max-edge-label {
+  font-weight: 600; /* Stays semi-bold */
+  margin-right: 4px;
+}
+
+.max-edge-display .max-edge-pick {
+  font-weight: 600; /* INCREASED: Makes the pick name semi-bold */
+  color: var(--text-primary);
+  margin-right: 2px;
+}
+
+.max-edge-display .max-edge-value {
+  font-weight: 700; /* Stays bold */
+  color: var(--accent-green);
+}
+
+.toggle-switch {
+  display: flex;
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--bg-secondary);
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  background-color: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-weight: 500;
+}
+
+.toggle-btn.active {
+  background-color: var(--accent-blue);
+  color: #fff;
+}
+/* --- Styles for the new BookmakerFilter component --- */
+.bookmaker-filter {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.bookmaker-filter-button {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 200px;
+}
+
+.bookmaker-filter-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  z-index: 100;
+  margin-top: 4px;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.dropdown-item input[type="checkbox"] {
+  margin-right: 10px;
+  pointer-events: none; /* Let the div handle the click */
+}
+
+.dropdown-item .book-logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  object-fit: contain;
+}
